@@ -11,6 +11,10 @@ I made a Dutch version. I decided not to allow vertical texts, but I did have to
 
 ## Prototype
 First prototype was made with an [ESP8266](WordClockDemo).
-I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g).
+I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
+at approximately 600x so that all states appear in a one minute movie.
+I also made a [real clock](WordClockHand) and a
+[video](https://youtu.be/wVqeRSxwd_Y) that captures one state change.
+
 
 
