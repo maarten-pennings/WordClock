@@ -1,4 +1,5 @@
 // wordclockdemo.ino - A clock that tells time, in Dutch, in steps of 5 minutes on a MAX7221 controlled 8x8 LED matrix
+//   This demos the clock: every 0.1ms the clock advances 1 minute
 // Idea http://www.espruino.com/Tiny+Word+Clock
 // Demo https://www.youtube.com/watch?v=YDhCZarNm9g
 // MAX722 datasheet https://datasheets.maximintegrated.com/en/ds/MAX7219-MAX7221.pdf
@@ -145,7 +146,7 @@ void dsp_img(uint64_t data) {
 
 void setup() {
   Serial.begin(115200);
-  Serial.println("\n\nWord clock on 8x8 LED matrix with MAX7221");
+  Serial.println("\n\nWord clock on 8x8 LED matrix with MAX7221 - demo");
   dsp_init();
 
   // Configure MAX7221 to use all LEDs at medium brightness, individually addressable
