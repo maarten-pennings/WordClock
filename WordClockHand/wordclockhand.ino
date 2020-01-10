@@ -216,49 +216,50 @@ void setup() {
 
   time_hour= 1;
   Serial.printf("Increment HOUR by pressing the button (long press to quit)\n");
-  Serial.printf("hour= %02d\n",time_hour);
-  dsp_img( clk_timemask(time_hour,0) );
+  #define HOUR_UPDATE()  Serial.printf("hour= %02d\n",time_hour); dsp_img( clk_timemask(time_hour,0) | (0xffLLU<<0) );
+  HOUR_UPDATE();
   while( 1 ) {
     but_scan();
     if( but_wentdown() ) {
       time_hour= (time_hour+1) % 12;
-      Serial.printf("hour= %02d\n",time_hour);
-      dsp_img( clk_timemask(time_hour,0) );
+      HOUR_UPDATE();
       last= millis();
     }
     if( but_isdown() && millis()-last>1000 ) {
       time_hour= (time_hour+11) % 12;
-      Serial.printf("hour= %02d\n",time_hour);
-      dsp_img( clk_timemask(time_hour,0) );
+      HOUR_UPDATE();
       break;
     }
     yield();
   }
 
   // Wait for button release
+  Serial.printf("Release\n");
   while( but_isdown() ) { but_scan(); yield(); }
 
   time_min= 5;
   Serial.printf("Increment MINUTES by pressing the button (long press to quit)\n");
-  Serial.printf("min = %02d\n",time_min);
-  dsp_img( clk_timemask(14,time_min) );
+  #define UPDATE_MIN() Serial.printf("min = %02d\n",time_min); dsp_img( clk_timemask(14,time_min) | (0xffLLU<<56) );
+  UPDATE_MIN();
   while( 1 ) {
     but_scan();
     if( but_wentdown() ) {
       time_min = (time_min+5) % 60;
-      Serial.printf("min = %02d\n",time_min);
-      dsp_img( clk_timemask(14,time_min) );
+      UPDATE_MIN();
       last= millis();
     }
     if( but_isdown() && millis()-last>1000 ) {
       time_min= (time_min+55) % 60;
-      Serial.printf("min = %02d\n",time_min);
-      dsp_img( clk_timemask(14,time_min) );
+      UPDATE_MIN();
       break;
     }
     yield();
   }
   
+  // Wait for button release
+  Serial.printf("Release\n");
+  while( but_isdown() ) { but_scan(); yield(); }
+
   last= millis();
 }
 
@@ -271,5 +272,7 @@ void loop() {
     if( time_min==60 ) { time_min= 0; time_hour= (time_hour+1)%12; }
     last= millis();
   }
-  delay(1000);
+  delay(900);
+  dsp_img(0);
+  delay(100);
 }
