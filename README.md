@@ -4,20 +4,59 @@ A clock that tells time in plain text
 ## Introduction
 I got the idea from [here](http://www.espruino.com/Tiny+Word+Clock).
 It uses a simple 8x8 LED matrix, so very little mechanics to do.
+The downside is that 8x8 LEDs means we are very restricted on the _model_: 
+which words are placed where and how.
 
 ## Model
-I made a Dutch version. Modelling all the words on 8x8 is not easy: I decided not to allow vertical texts, so 
-I did have to cheat:
+I want a Dutch word clock.
+I do not like vertical text. Is it possible to fit all this on 8x8?
 
- - two paired letters vIEr and twaaLF
- - one split word Z-E-S
- - less of a problem: two times a space missing and the word UUR missing
+For the hours, we need words `one` to `twelve`. That is 48 characters - that is writing `vyf`, not `vijf`.
+This means that we can not have 60 minutes. Let's try to go for multiples of 5 only.
+In Dutch this means `vyf` (`over`), `tien` (over), `kwart` (over), tien (voor `half`), vyf (voor half), half, vyf (`over` half), etc.
+That is 24 characters.
+
+Oops, 24+48 is 72, and we only have 64. 
+But we can save a bit, for example, for `acht` and `tien`, we only need `achtien`.
+
+### Model 1
+For my first model, I made a graph, coupling first letters to last letters of words. I started with the minutes
+
+![Minutes graph](minutes.png)
+
+We can only save 1 character, but that doesn't help, we go from 24 to 23. But 24 is 3 rows, and saving one character 
+on the last row doesn't help, we can not fit am hour there.
+
+Two solutions are shown below. They fit in three rows.
+```
+  vyfkwart     kwartien
+  tienvoor     vyf_voor
+  overhalf     overhalf
+```
+
+Note that `vyf`, `tien`, and `kwart` need to come before `over` and `voor`, and only then we can have `half`.
+So there is not much room for alternatives.
+
+Let's next look at the hours. They need to come after the minutes.
+This is the graph.
+
+![Hours graph](hours.png)
+
+We have a problem. Full words require 48 characters. We can best save 5, which still requires 43. But we only have 40 (5 rows).
+I cheated in my first model: (1) two paired letters vIEr and twaaLF, (2) one split word Z-E-S. A minor problem is thattwo times 
+a space missing (between `tien` and `voor`, and between `over` and `half`) and the word `uur` missing (for every full hour).
+
+This is my first attempt.
 
 ![model 1](model1.jpg)
 
-Marc made another model. He allows diagonal words, thereby eliminating the paired letters and split words.
+
+### Model 2.
+Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
 
 ![model 2](model2.jpg)
+
+This eliminates the paired letters and split words. Still a missing space, and `uur` missing.
 
 
 ## Prototype
