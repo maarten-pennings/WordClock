@@ -11,13 +11,13 @@ which words are placed where and how.
 I want a Dutch word clock.
 I do not like vertical text. Is it possible to fit all this on 8x8?
 
-For the hours, we need words `one` to `twelve`. That is 48 characters - that is writing `vyf`, not `vijf`.
-This means that we can not have 60 minutes. Let's try to go for multiples of 5 only.
+For the hours, we need words `one` to `twelve`. That is 48 characters - note we are writing `vyf`, not `vijf`.
+This means that we can not have words for all 60 minutes. Let's try to go for multiples of 5 only.
 In Dutch this means `vyf` (`over`), `tien` (over), `kwart` (over), tien (voor `half`), vyf (voor half), half, vyf (`over` half), etc.
 That is 24 characters.
 
 Oops, 24+48 is 72, and we only have 64. 
-But we can save a bit, for example, for `acht` and `tien`, we only need `achtien`.
+But we can save a bit, for example, for `tien` and `negen`, we only need `tienegen`.
 
 ### Model 1
 For my first model, I made a graph, coupling first letters to last letters of words. I started with the minutes
@@ -25,7 +25,7 @@ For my first model, I made a graph, coupling first letters to last letters of wo
 ![Minutes graph](minutes.png)
 
 We can only save 1 character, but that doesn't help, we go from 24 to 23. But 24 is 3 rows, and saving one character 
-on the last row doesn't help, we can not fit am hour there.
+on the last row doesn't help, we can not fit an hour there.
 
 Two solutions are shown below. They fit in three rows.
 ```
@@ -42,9 +42,11 @@ This is the graph.
 
 ![Hours graph](hours.png)
 
-We have a problem. Full words require 48 characters. We can best save 5, which still requires 43. But we only have 40 (5 rows).
-I cheated in my first model: (1) two paired letters vIEr and twaaLF, (2) one split word Z-E-S. A minor problem is thattwo times 
-a space missing (between `tien` and `voor`, and between `over` and `half`) and the word `uur` missing (for every full hour).
+We have a problem. Full words require 48 characters. We can best save 5, which still requires 43. 
+But we only have 40 (5 rows), so we need to get rid of 3 more characters.
+I cheated in my first model: (1) two paired letters vIEr and twaaLF, (2) one split word Z-E-S. 
+A minor problem is that two times a space missing (between `tien` and `voor`, and between `over` and `half`) 
+and the word `uur` missing (for every full hour).
 
 This is my first attempt.
 
