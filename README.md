@@ -44,8 +44,10 @@ This is the graph.
 
 We have a problem. Full words require 48 characters. We can best save 5, which still requires 43. 
 But we only have 40 (5 rows), so we need to get rid of 3 more characters.
+
 I cheated in my first model: (1) two paired letters vIEr and twaaLF, (2) one split word Z-E-S. 
-A minor problem is that two times a space missing (between `tien` and `voor`, and between `over` and `half`) 
+A minor problem in the first model is that two times a space missing 
+(between `tien` and `voor`, and between `over` and `half`) 
 and the word `uur` missing (for every full hour).
 
 This is my first attempt.
@@ -58,7 +60,7 @@ Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm an
 
 ![model 2](model2.jpg)
 
-This eliminates the paired letters and split words. Still a missing space, and `uur` missing.
+This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
 
 
 ## Prototype
@@ -73,7 +75,7 @@ At startup the user can press the FLASH button to set the hour and minute.
 
 The next version of uses the second words model (Marc's).
 At startup you can not only set hour and minute, but also mode: clock or a fast demo.
-Here is the video of the [fast mode](https://www.youtube.com/watch?v=LO9IB6KRluM).
+Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mode.
 
 
 
