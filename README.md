@@ -84,12 +84,11 @@ Many have made a wordclock, but assembling LEDs yourself is quite some [work](ht
 The good thing of the [8x8 LED matrix](https://www.aliexpress.com/item/32681183937.html) is that hardly any mechanics are needed. 
 The downside, is that the 8x8 matrix is small, in my case 32x32 mm².
 
+### 3D print
+
 The I remembered that there are also [8x8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
 Twice as big (65x65 mm²), fully assembled and still affordable.
 On top of that: RGB and only a single wire to control all.
-The magic of the single wire control is that the NeoPixels contains a controller
-
-![Inside NeoPixel](imgs/neozoom.jpg)
 
 This NeoPixel matrix is hopefully big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
@@ -104,6 +103,40 @@ I did not yet receice the NeoPixel matrix from AliExpress, so I had to guess whe
 
 ![Back side of the letters](imgs/lettersback.jpg)
 
+### NeoPixel power
+
+One thing that worries me about the NeoPixels is power usage. I tasked myself with measuring it.
+
+It is helpfull to understand the inner workings of a NeoPixels.
+It contains a controller and three LEDs.
+
+![Inside NeoPixel](imgs/neozoom.jpg)
+
+I did have a 4x4 NeoPixel board, and I investigated the power usage on that board.
+I measured the current when 1 NeoPixel is red (0xFF0000). I measured also for 2, 3, ... 16 NeoPixels.
+I measured the current when 1 NeoPixel is red but dimmed a bit (0xBF0000), and also for 2, 3, ... 16 NeoPixels.
+I measured the red at half brightness (0x7F0000) and at quarter brightness, for 1 to 16 NeoPixels.
+All these experiments use just the red LED in the NeoPixel, so for the next two experiments I used the other
+two LEDs in the NeoPixels: green (0x00FF00) and blue (0x0000FF) for 1 to 16 NeoPixels.
+Finally I measured when more than 1 LED is on: purple (0xFF00FF) and white (0xFFFFFF).
+
+All in all, 8 experiments, each with 1 to 16 NeoPixels:
+
+![Power usage table](imgs/powertab.png)
+
+and here is the usage graphed:
+
+![Power usage graph](imgs/power.png)
+
+Conclusions: 
+ - There is a off current of 8 mA (0.5mA per NeoPixel), probably due to the controllers in the 16 NeoPixels
+ - A NeoPixel LED consumes 13mA when fully powered (0xFF).
+ - The power usage of a NeoPixel LED is linear in the control value (00..FF).
+ - The power usage of a NeoPixel sequence is linear in the number of NeoPixels switched on.
+ - A 4x4 at full white (0xFFFFFF) thus consumes 16x3x13 = 624 mA
+ - A 8x8 at full white will likely consume 2496 mA or 2.5 A.
+
+### Testing
 Finally, I received the NeoPixels matrix.
 
 ![NeoPixel 8x8](imgs/pcb8x8.jpg)
@@ -112,5 +145,6 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 
 ![NeoPixel 8x8](imgs/pcb8x8back.jpg)
 
+I adapted the software and did a try-out. Here is the [video](https://youtu.be/TlJQuVb-GIA)
 
 
