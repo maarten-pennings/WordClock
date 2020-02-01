@@ -22,7 +22,7 @@ But we can save a bit, for example, for `tien` and `negen`, we only need `tieneg
 ### Model 1
 For my first model, I made a graph, coupling first letters to last letters of words. I started with the minutes
 
-![Minutes graph](minutes.png)
+![Minutes graph](imgs/minutes.png)
 
 We can only save 1 character, but that doesn't help, we go from 24 to 23. But 24 is 3 rows, and saving one character 
 on the last row doesn't help, we can not fit an hour there.
@@ -40,7 +40,7 @@ So there is not much room for alternatives.
 Let's next look at the hours. They need to come after the minutes.
 This is the graph.
 
-![Hours graph](hours.png)
+![Hours graph](imgs/hours.png)
 
 We have a problem. Full words require 48 characters. We can best save 5, which still requires 43. 
 But we only have 40 (5 rows), so we need to get rid of 3 more characters.
@@ -52,13 +52,13 @@ and the word `uur` missing (for every full hour).
 
 This is my first attempt.
 
-![model 1](model1.jpg)
+![model 1](imgs/model1.jpg)
 
 
 ### Model 2.
 Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
 
-![model 2](model2.jpg)
+![model 2](imgs/model2.jpg)
 
 This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
 
