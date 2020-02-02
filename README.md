@@ -147,4 +147,4 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 
 I adapted the software and did a try-out. Here is the [video](https://youtu.be/TlJQuVb-GIA)
 
-
+I also updated the [3D model](https://a360.co/2RQO6uB).
