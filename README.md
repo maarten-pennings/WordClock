@@ -115,7 +115,7 @@ It contains a controller and three LEDs.
 I did have a 4x4 NeoPixel board, and I investigated the power usage on that board.
 I measured the current when 1 NeoPixel is red (0xFF0000). I measured also for 2, 3, ... 16 NeoPixels.
 I measured the current when 1 NeoPixel is red but dimmed a bit (0xBF0000), and also for 2, 3, ... 16 NeoPixels.
-I measured the red at half brightness (0x7F0000) and at quarter brightness, for 1 to 16 NeoPixels.
+I measured the red at half brightness (0x7F0000) and at quarter brightness (0x3F0000), for 1 to 16 NeoPixels.
 All these experiments use just the red LED in the NeoPixel, so for the next two experiments I used the other
 two LEDs in the NeoPixels: green (0x00FF00) and blue (0x0000FF) for 1 to 16 NeoPixels.
 Finally I measured when more than 1 LED is on: purple (0xFF00FF) and white (0xFFFFFF).
