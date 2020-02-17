@@ -210,10 +210,75 @@ The start is at 02:00:00 (default), the stop is explicit at 03:00:00.
 
 See the [source](TimeKeeping) for more details on this string.
 
+Here is the output of the script
+```
+time-keeping - NTP with TZ and DST
+Not yet synced - 1970-01-01 09:00:00 (dst=0)
+Not yet synced - 1970-01-01 09:00:01 (dst=0)
+Not yet synced - 1970-01-01 09:00:02 (dst=0)
+Not yet synced - 1970-01-01 09:00:03 (dst=0)
+SET
+2020-02-17 12:43:48 (dst=0)
+2020-02-17 12:43:49 (dst=0)
+2020-02-17 12:43:50 (dst=0)
+2020-02-17 12:43:51 (dst=0)
+2020-02-17 12:43:52 (dst=0)
+2020-02-17 12:43:53 (dst=0)
+2020-02-17 12:43:54 (dst=0)
+2020-02-17 12:43:55 (dst=0)
+2020-02-17 12:43:56 (dst=0)
+2020-02-17 12:43:57 (dst=0)
+2020-02-17 12:43:58 (dst=0)
+2020-02-17 12:43:59 (dst=0)
+DEMO >>> WiFi off: time continues
+2020-02-17 12:44:00 (dst=0)
+2020-02-17 12:44:01 (dst=0)
+2020-02-17 12:44:02 (dst=0)
+2020-02-17 12:44:03 (dst=0)
+2020-02-17 12:44:04 (dst=0)
+DEMO >>> Clock reset: time continues from reset val
+SET
+Not yet synced - 2000-11-22 11:22:34 (dst=0)
+Not yet synced - 2000-11-22 11:22:35 (dst=0)
+Not yet synced - 2000-11-22 11:22:36 (dst=0)
+Not yet synced - 2000-11-22 11:22:37 (dst=0)
+Not yet synced - 2000-11-22 11:22:38 (dst=0)
+DEMO >>> WiFo on: time syncs again
+Not yet synced - 2000-11-22 11:22:39 (dst=0)
+Not yet synced - 2000-11-22 11:22:40 (dst=0)
+Not yet synced - 2000-11-22 11:22:41 (dst=0)
+SET
+2020-02-17 12:44:14 (dst=0)
+2020-02-17 12:44:15 (dst=0)
+2020-02-17 12:44:16 (dst=0)
+2020-02-17 12:44:17 (dst=0)
+... many lines deleted
+2020-02-17 13:44:10 (dst=0)
+2020-02-17 13:44:11 (dst=0)
+2020-02-17 13:44:12 (dst=0)
+2020-02-17 13:44:13 (dst=0)
+SET
+2020-02-17 13:44:15 (dst=0)
+```
 
 
-
-
-
-
+ - At first, the time is not yet set, so we get "random" value (probably the date/time corresponding with value 0).
+   The script uses the heuristic that any time before 2020 means 'not synced'.
+   Note that the time keeping (stepping a second every second) happens, even though the time has not yet been SET.
+ - It takes 5 seconds before we receive the first message from one of the NTP server. 
+ - At 2020-02-17 12:43:48, the NTP messages arrives (see the SET). The time is known.
+   Since 17 Feb is before DST start "month 3 (March), week 5, on Sunday (day 0)", daylight saving is indeed off.
+ - At around 12:44:00 the script executes a test: it switches off WiFi.
+   The time is maintained by the CPU (probably: crystal, timer, interrupt).
+   So even without network, time is kept.
+ - At 12:44:05 a second test kicks in.
+   The local clock is hand written to 2000-11-22 11:22:34.
+   Note the SET popping up.
+   Since there is no WiFi, that time is maintained.
+ - At 12:44:10 WiFi is switched on (step 3 of the test). 
+   Since there is not an immediate NTP message, the old hand-set time is still maintained.
+ - At 2020-02-17 12:44:14 an NTP message is received.
+   The clock is back to real time, and locally maintained.
+ - Note that one hour later (2020-02-17 13:44:14) the system (asks for and) receives the next NTP message.
+   See the SET. The local clock is synced.
 
