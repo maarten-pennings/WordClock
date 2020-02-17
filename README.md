@@ -265,16 +265,16 @@ SET
  - At first, the time is not yet set, so we get "random" value (probably the date/time corresponding with value 0).
    The script uses the heuristic that any time before 2020 means 'not synced'.
    Note that the time keeping (stepping a second every second) happens, even though the time has not yet been SET.
- - It takes 5 seconds before we receive the first message from one of the NTP server. 
- - At 2020-02-17 12:43:48, the NTP messages arrives (see the SET). The time is known.
+ - It takes 5 seconds before we receive the first message from one of the NTP servers. 
+ - At 2020-02-17 12:43:48, an NTP message arrives (see the SET). The time is known.
    Since 17 Feb is before DST start "month 3 (March), week 5, on Sunday (day 0)", daylight saving is indeed off.
  - At around 12:44:00 the script executes a test: it switches off WiFi.
    The time is maintained by the CPU (probably: crystal, timer, interrupt).
    So even without network, time is kept.
  - At 12:44:05 a second test kicks in.
-   The local clock is hand written to 2000-11-22 11:22:34.
-   Note the SET popping up.
-   Since there is no WiFi, that time is maintained.
+   The local clock is hand written to 2000-11-22 11:22:33.
+   Note the SET popping up, this time caused by hand-setting, not an NTP message.
+   Since there is no WiFi, the hand-set time is maintained.
  - At 12:44:10 WiFi is switched on (step 3 of the test). 
    Since there is not an immediate NTP message, the old hand-set time is still maintained.
  - At 2020-02-17 12:44:14 an NTP message is received.
