@@ -67,7 +67,7 @@ The first prototype was made with an ESP8266, and an 8x8 LED matrix.
 I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
 at approximately 600x so that all states appear in a one minute movie.
 
-I also made a [real clock](WordClock) and a
+I also made a [real clock](WordClockLed) and a
 [video](https://youtu.be/wVqeRSxwd_Y) that captures one state change.
 This really keeps the time (based on the ESP8266 crystal).
 At startup the user can press the FLASH button to set the hour and minute.
@@ -82,7 +82,7 @@ Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm an
 
 This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
 
-My next prototype uses Marc's model. It is supported by the same [sketch](WordClock) as the first prototype.
+My next prototype uses Marc's model. It is supported by the same [sketch](WordClockLed) as the first prototype.
 
 At startup you can not only set hour and minute, but also mode: clock or a fast demo.
 Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mode.
@@ -130,11 +130,13 @@ All these experiments use just the red LED in the NeoPixel, so for the next two 
 two LEDs in the NeoPixels: green (0x00FF00) and blue (0x0000FF) for 1 to 16 NeoPixels.
 Finally I measured when more than 1 LED is on: purple (0xFF00FF) and white (0xFFFFFF).
 
-All in all, 8 experiments, each with 1 to 16 NeoPixels:
+All in all, 8 experiments, each with 1 to 16 NeoPixels.
+The [script](NeoPixelAmps) was short, but doing all the measurements took quite some time.
+I manually logged all [results](NeoPixelAmps/NeoStats.txt), and then tabulated them in Excel:
 
 ![Power usage table](imgs/powertab.png)
 
-and here is the usage graphed:
+Here is the usage graphed:
 
 ![Power usage graph](imgs/power.png)
 
@@ -147,7 +149,8 @@ Conclusions:
  - A 8x8 at full white will likely consume 2496 mA or 2.5 A.
 
 
-### Prototype 3
+
+## Prototype 3
 
 Finally, I received the NeoPixels matrix.
 
@@ -157,7 +160,71 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 
 ![NeoPixel 8x8](imgs/pcb8x8back.jpg)
 
-I adapted the software and did a try-out. Here is the [video](https://youtu.be/TlJQuVb-GIA)
+So, I made a new [3D model](https://a360.co/2RQO6uB).
 
-I also made a new [3D model](https://a360.co/2RQO6uB).
+I adapted the [software](WordClockNeo) and did a try-out. 
+Here is the [video](https://youtu.be/TlJQuVb-GIA).
+
+
+
+## Keeping time
+
+Now that the NeoPixel solution with 3D printed enclosure seems to work, we needed to tackle the next biggest problem.
+Keeping track of time. There are several solutions
+
+ - Hand set the time, and use the crystal.
+ 
+   Plus: No extra components needed.
+   
+   Minus: Needs hand setting. Does not know about daylight saving time.
+   
+ - Use a DS1307 or DS1302 time tracking chip
+ 
+   Plus: Keeps time, even when not mains powered (small battery).
+   
+   Minus: Needs hand setting once and does not know about daylight saving time.
+   
+ - Use time stamp from webservers (e.h. HEAD of google.nl)
+ 
+   Plus: No extra components needed (assuming ESP8266), no hand setting needed.
+   
+   Minus: Web servers publish UTC, not local time. So adaptations for time zone and DST needed.
+   
+ - Use NTP servers
+ 
+   Plus: Servers are made for it. No extra components needed (assuming ESP8266), no hand setting needed.
+   
+   Minus: NTP servers publish UTC, not local time. 
+
+When I found out the ESP8266 `<time.h>` actually includes NTP
+and that the implementation has a single string parameter to configure time zone as well as DST,
+I decided to use the last solution.
+
+It basically boils down to telling `<time.h>` which NTP servers to use and what the timezone and DST configuration is.
+Actually up to three servers can be passed. The timezone and DST configuration is passed as the first parameter:
+
+```
+  configTime(TZ, SVR1, SVR2, SVR3);
+```
+
+The first parameter is a quite compact string. See below the string for Amsterdam.
+
+```
+  #define TZ "CET-1CEST,M3.5.0,M10.5.0/3" // Amsterdam
+```
+
+The (standard) timezone is known as CET, and you need to subtract 1 to get UTC.
+The daylight saving is known as CEST, and since it is not explicitly included, it defaults to on top of the standard time.
+After the comma we find the start moment of the daylight saving period: it starts at month 3 (March), week 5, on Sunday (day 0).
+AFter the next comma, we find when daylight saving stops: at month 10 (October), week 5, day 0 (Sunday).
+The start is at 02:00:00 (default), the stop is explicit at 03:00:00.
+
+See the [source](TimeKeeping) for morw details on this string.
+
+
+
+
+
+
+
 
