@@ -1,4 +1,4 @@
-// NeoPixelAmps - measuring power uszed by NeoPixels 
+// NeoPixelAmps - Sketch used to measure power used by NeoPixels - changing state_color each run
 #include <Adafruit_NeoPixel.h>
 
 // Neopixels run at 5v0; required signal level is at 70%. 

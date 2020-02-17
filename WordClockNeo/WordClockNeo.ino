@@ -1,4 +1,4 @@
-// WordClockNeo.ino - A clock that tells time, in Dutch, in steps of 5 minutes on a neopixel 8x8 LED matrix
+// WordClockNeo.ino - A clock that tells time, in Dutch, in steps of 5 minutes on a NeoPixel 8x8 LED matrix
 //   Clock is hand-set (with flash button) and runs on ESP8266 crystal
 //   It also has a demo mode: every 0.1ms the clock advances 1 minute
 // Idea http://www.espruino.com/Tiny+Word+Clock
