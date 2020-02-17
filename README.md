@@ -172,29 +172,18 @@ Here is the [video](https://youtu.be/TlJQuVb-GIA).
 Now that the NeoPixel solution with 3D printed enclosure seems to work, we needed to tackle the next biggest problem.
 Keeping track of time. There are several solutions
 
- - Hand set the time, and use the crystal.
- 
-   Plus: No extra components needed.
-   
+ - Hand set the time, and use the crystal.  
+   Plus: No extra components needed.  
    Minus: Needs hand setting. Does not know about daylight saving time.
-   
- - Use a DS1307 or DS1302 time tracking chip
- 
-   Plus: Keeps time, even when not mains powered (small battery).
-   
-   Minus: Needs hand setting once and does not know about daylight saving time.
-   
- - Use time stamp from webservers (e.h. HEAD of google.nl)
- 
-   Plus: No extra components needed (assuming ESP8266), no hand setting needed.
-   
+ - Use a [DS1307](https://www.aliexpress.com/item/32827794525.html) or [DS1302](https://www.aliexpress.com/item/32728498431.html) time tracking chip  
+   Plus: Keeps time, even when not mains powered (small battery).  
+   Minus: Needs hand setting once and does not know about daylight saving time.   
+ - Use time stamp from webservers (e.g. HEAD of google.nl)  
+   Plus: No extra components needed (assuming ESP8266), no hand setting needed.  
    Minus: Web servers publish UTC, not local time. So adaptations for time zone and DST needed.
-   
- - Use NTP servers
- 
-   Plus: Servers are made for it. No extra components needed (assuming ESP8266), no hand setting needed.
-   
-   Minus: NTP servers publish UTC, not local time. 
+ - Use NTP servers  
+   Plus: Servers are made for it. No extra components needed (assuming ESP8266), no hand setting needed.  
+   Minus: NTP servers publish UTC, not local time.
 
 When I found out the ESP8266 `<time.h>` actually includes NTP
 and that the implementation has a single string parameter to configure time zone as well as DST,
@@ -214,12 +203,12 @@ The first parameter is a quite compact string. See below the string for Amsterda
 ```
 
 The (standard) timezone is known as CET, and you need to subtract 1 to get UTC.
-The daylight saving is known as CEST, and since it is not explicitly included, it defaults to on top of the standard time.
+The daylight saving is known as CEST, and since it is not explicitly included, it defaults to one top of the standard time.
 After the comma we find the start moment of the daylight saving period: it starts at month 3 (March), week 5, on Sunday (day 0).
-AFter the next comma, we find when daylight saving stops: at month 10 (October), week 5, day 0 (Sunday).
+After the next comma, we find when daylight saving stops: at month 10 (October), week 5, day 0 (Sunday).
 The start is at 02:00:00 (default), the stop is explicit at 03:00:00.
 
-See the [source](TimeKeeping) for morw details on this string.
+See the [source](TimeKeeping) for more details on this string.
 
 
 
