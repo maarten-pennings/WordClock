@@ -27,7 +27,7 @@
 //   <dstend>    ::= <dayinyear> [ / <time> ]
 //   <dayinyear> ::= J <num>                  // day, with <num> between 1 and 365. February 29 is never counted, even in leap years
 //                 | <num>                    // day, with <num> between 0 and 365. February 29 is counted in leap years
-//                 | M<m-num>.<w-num>.<d-num> // day <d-num> of week <w-num> of month <m-num>. Day <d-num> is 0(Sun)..6(Sat). Week <w-num> is 1..5. Month <m-num> 1..12.
+//                 | M<m-num>.<w-num>.<d-num> // day <d-num> of week <w-num> of month <m-num>. Day <d-num> is 0(Sun)..6(Sat). Week <w-num> is 1..5 (week 1 is the first week in which day <d-num> occurs). Month <m-num> 1..12.
 //   <time>      ::= hh[:mm[:ss]]             // when, in the local time, the change to dst occurs. If omitted, the default is 02:00:00. 
 
 void setup() {
@@ -76,7 +76,7 @@ void loop() {
     sday.tm_sec = 33;
     time_t tday= mktime(&sday); // time as seconds since 1900
     if( tday==(time_t)-1 ) Serial.printf("error\n");
-    timeval vday = { tday, 0 }; // time as a pair of time in seconds and usec (set to 0 here)
+    struct timeval vday = { tday, 0 }; // time as a pair of time in seconds and usec (set to 0 here)
     struct timezone tz = {0,0}; // zone offset and DST offset
     settimeofday(&vday, &tz );  // If I pass NULL for tz (https://linux.die.net/man/2/settimeofday), my hours are DST mangled
     Serial.println("DEMO >>> Clock reset: time continues from reset val");
