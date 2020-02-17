@@ -163,6 +163,9 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 So, I made a new [3D model](https://a360.co/2RQO6uB).
 
 I adapted the [software](WordClockNeo) and did a try-out. 
+
+![Running NeoPixel](imgs/proto3.jpg)
+
 Here is the [video](https://youtu.be/TlJQuVb-GIA).
 
 
