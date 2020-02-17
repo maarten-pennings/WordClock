@@ -246,7 +246,7 @@ Not yet synced - 2000-11-22 11:22:35 (dst=0)
 Not yet synced - 2000-11-22 11:22:36 (dst=0)
 Not yet synced - 2000-11-22 11:22:37 (dst=0)
 Not yet synced - 2000-11-22 11:22:38 (dst=0)
-DEMO >>> WiFo on: time syncs again
+DEMO >>> WiFi on: time syncs again
 Not yet synced - 2000-11-22 11:22:39 (dst=0)
 Not yet synced - 2000-11-22 11:22:40 (dst=0)
 Not yet synced - 2000-11-22 11:22:41 (dst=0)
