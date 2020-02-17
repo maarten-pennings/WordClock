@@ -64,6 +64,10 @@ This is my first attempt.
 ![Prototype 1](imgs/model1.jpg)
 
 The first prototype was made with an ESP8266, and an 8x8 LED matrix.
+The wiring is straightforward:
+
+![Led 8x8 wiring](imgs/led8x8wires3.png)
+
 I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
 at approximately 600x so that all states appear in a one minute movie.
 
@@ -161,6 +165,13 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 ![NeoPixel 8x8](imgs/pcb8x8back.jpg)
 
 So, I made a new [3D model](https://a360.co/2RQO6uB).
+
+This is the wiring I used; the resistor is 470 Ω, the capacitor 1000 µF 
+(see [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)).
+Note: The Neopixels run at 5v0, and the required signal level is at 70%, or 5v0*70%=3v5.
+Since the ESP8266 runs on 3v3, we are actually below spec.
+
+![NeoPixel wiring](imgs/NeoWires.png)
 
 I adapted the [software](WordClockNeo) and did a try-out. 
 
