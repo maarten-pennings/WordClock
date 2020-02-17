@@ -3,13 +3,22 @@ A clock that tells time in plain text.
 
 Here is an example of a commercial [product](https://qlocktwo.com/).
 
+
+
 ## Introduction
-I got the idea from [here](http://www.espruino.com/Tiny+Word+Clock).
-It uses a simple 8x8 LED matrix, so very little mechanics to do.
+
+I had seen WordClocks before, e.g. [here](https://www.instructables.com/id/My-Arduino-WordClock/).
+However, doing the mechanics for 100 LEDs, isolating them (light bleed), wiring them - too much work.
+
+Then I stumbled on a simpler [version](http://www.espruino.com/Tiny+Word+Clock).
+It uses an 8x8 LED matrix, so very little mechanics to do.
 The downside is that 8x8 LEDs means we are very restricted on the _model_: 
 which words are placed where and how.
 
-## Models
+
+
+## Prototype 1
+
 I want a Dutch word clock.
 I do not like vertical text. Is it possible to fit all this on 8x8?
 
@@ -21,8 +30,7 @@ That is 24 characters.
 Oops, 24+48 is 72, and we only have 64. 
 But we can save a bit, for example, for `tien` and `negen`, we only need `tienegen`.
 
-### Model 1
-For my first model, I made a graph, coupling first letters to last letters of words. I started with the minutes:
+For my first prototype, I made a graph, coupling first letters to last letters of words. I started with the minutes:
 
 ![Minutes graph](imgs/minutes.png)
 
@@ -47,25 +55,15 @@ This is the graph.
 We have a problem. Full words require 48 characters. We can, at best, save 5, which still requires 43. 
 But we only have 40 (5 rows of 8), so we need to get rid of 3 more characters.
 
-I cheated in my first model: two paired letters vIEr and twaaLF, and one split word Z-E-S. 
+I cheated in my first prototype: two paired letters vIEr and twaaLF, and one split word Z-E-S. 
 There are also some minor problem: two times a space missing (between `tien` and `voor`, and between `over` and `half`) 
 and the word `uur` missing (for every full hour).
 
 This is my first attempt.
 
-![model 1](imgs/model1.jpg)
+![Prototype 1](imgs/model1.jpg)
 
-
-### Model 2.
-Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
-
-![model 2](imgs/model2.jpg)
-
-This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
-
-
-## Prototype 1
-First prototype was made with an ESP8266, and an 8x8 LED matrix.
+The first prototype was made with an ESP8266, and an 8x8 LED matrix.
 I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
 at approximately 600x so that all states appear in a one minute movie.
 
@@ -74,40 +72,52 @@ I also made a [real clock](WordClock) and a
 This really keeps the time (based on the ESP8266 crystal).
 At startup the user can press the FLASH button to set the hour and minute.
 
-Next, I used model 2 (Marc's).
+
+
+## Prototype 2
+
+Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
+
+![model 2](imgs/model2.jpg)
+
+This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
+
+My next prototype uses Marc's model. It is supported by the same [sketch](WordClock) as the first prototype.
+
 At startup you can not only set hour and minute, but also mode: clock or a fast demo.
 Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mode.
 
 
-## Prototype 2
-Many have made a wordclock, but assembling LEDs yourself is quite some [work](https://www.instructables.com/id/My-Arduino-WordClock/).
+
+## 3D printing
+
 The good thing of the [8x8 LED matrix](https://www.aliexpress.com/item/32681183937.html) is that hardly any mechanics are needed. 
-The downside, is that the 8x8 matrix is small, in my case 32x32 mm².
+The downside of the 8x8 LED matrix, is that the 8x8 matrix is small, in my case 32x32 mm².
 
-### 3D print
-
-The I remembered that there are also [8x8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
+However, there are also [8x8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
 Twice as big (65x65 mm²), fully assembled and still affordable.
-On top of that: RGB and only a single wire to control all.
+On top of that: the LEDs are full RGB and only a single wire to control all LEDs.
 
-This NeoPixel matrix is hopefully big enough to allow the clock to be 3D printed.
+This NeoPixel matrix is big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
-transparant diffuser. This is the [model](https://a360.co/2R9Nksa).
+transparent diffuser. This is the [model](https://a360.co/2R9Nksa).
 
 I was quite pleased with the result. The print resolution is sufficient to print the letters. 
-And the transparancy is enough to see through.
+And the transparency is enough to see through.
 
 ![Letters with back light](imgs/letters.jpg)
 
-I did not yet receice the NeoPixel matrix from AliExpress, so I had to guess where to leave a notch for the resistors.
+I did not yet receive the NeoPixel matrix from AliExpress, so I had to guess where to leave a notch for the resistors.
 
 ![Back side of the letters](imgs/lettersback.jpg)
 
-### NeoPixel power
+
+
+## NeoPixel power
 
 One thing that worries me about the NeoPixels is power usage. I tasked myself with measuring it.
 
-It is helpfull to understand the inner workings of a NeoPixels.
+It is helpful to understand the inner workings of a NeoPixels.
 It contains a controller and three LEDs.
 
 ![Inside NeoPixel](imgs/neozoom.jpg)
@@ -136,7 +146,9 @@ Conclusions:
  - A 4x4 at full white (0xFFFFFF) thus consumes 16x3x13 = 624 mA
  - A 8x8 at full white will likely consume 2496 mA or 2.5 A.
 
-### Testing
+
+### Prototype 3
+
 Finally, I received the NeoPixels matrix.
 
 ![NeoPixel 8x8](imgs/pcb8x8.jpg)
@@ -147,4 +159,5 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 
 I adapted the software and did a try-out. Here is the [video](https://youtu.be/TlJQuVb-GIA)
 
-I also updated the [3D model](https://a360.co/2RQO6uB).
+I also made a new [3D model](https://a360.co/2RQO6uB).
+
