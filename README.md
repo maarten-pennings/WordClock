@@ -142,11 +142,11 @@ Here is the usage graphed:
 
 Conclusions: 
  - There is a off current of 8 mA (0.5mA per NeoPixel), probably due to the controllers in the 16 NeoPixels
- - A NeoPixel LED consumes 13mA when fully powered (0xFF).
+ - A NeoPixel LED consumes 12.9mA when fully powered (0xFF).
  - The power usage of a NeoPixel LED is linear in the control value (00..FF).
  - The power usage of a NeoPixel sequence is linear in the number of NeoPixels switched on.
- - A 4x4 at full white (0xFFFFFF) thus consumes 16x3x13 = 624 mA
- - A 8x8 at full white will likely consume 2496 mA or 2.5 A.
+ - A 4x4 at full white (0xFFFFFF) thus consumes 16x3x12.9 + 16x0.5= 627 mA
+ - A 8x8 at full white will likely consume 64x3x12.9 + 64x0.5 = 2509 mA or 2.5 A.
 
 
 
