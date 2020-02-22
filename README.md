@@ -343,4 +343,46 @@ Suppose the internal clock is really at stand still; then it would delay 60/1000
 The NTP updates are every hour, so we would be late by 60x60 x 6% = 216 seconds or 3.6 minutes.
 
 
+## Power architecture
+
+We are going to use an ESP8266 for the WordClock. They are easily and cheaply available, and they have WiFi.
+That allows them to use NTP (time syncing) which makes them well suited for our clock.
+
+The ESP8266 runs on 3V3, but typically comes on boards that are powerd via USB (and thus 5V).
+These boards thus have a voltage regulator that converts 5V to 3V3. 
+
+The boards also have a VIN that connects to the regulator. This allows us to use an external power supply
+(6V-12V) instead of power over USB.
+
+![Power architecture](imgs/powerarch.png)
+
+Note that there is a diode between the USB port and VIN. 
+If you would externally power the NodeMCU board via VIN (say 9V), and you would also have connected the
+USB port to a PC (for the Serial port) the external 9V would also be on the PCs USB port, possibly damaging it.
+So, the diode is for protection.
+
+There is an extra effect: there is a voltage drop over a diode. Typically, a schottky diode is used, which has 
+a voltage drop of 0.3V. So if you plug in USB (5V), the voltage regulator has 4V7 is input, which is still
+enough the have 3V3 out. But VIN will supply 4V7.
+
+The NeoPixels need 5V. It would be easiest to tab that from the USB port. Some boards do have a pin for that.
+I call it VUSB in the diagram above. However not all (big) boards do have a VUSB pin, and the smaller boards 
+typically never have one. 
+
+We could use VIN as _output_ instead of _input_, and power the NeoPixels with VIN. 
+This means the NeoPixels run on 4V7, which is acceptable.
+That level is actually good, because the NeoPixel data pin requires 70% of its VDD.
+And that woul now be 70% x 4V7 = 3V29, which is below the signalling level of the ESP8266, which runs on 3V3.
+
+However, before we get enthousiastic about this setup, there is one major drawback.
+The whole NeoPixel chain would draw current through the diode, which is typically limited to 250mA.
+That does not match well with the (above) computed maximum current of 2500mA.
+
+The bigger board with VUSB pins are too big for our encasing. So what I propose is to use
+a small board (e.g. [Wemos D1 mini](https://www.aliexpress.com/item/32944522985.html)), remove the diode,
+and replace it with a wire. In this way, the VIN is actually converted into a VUSB.
+
+
+
+
 
