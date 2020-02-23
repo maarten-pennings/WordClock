@@ -19,7 +19,7 @@ which words are placed where and how.
 
 
 
-## Prototype 1
+## Model 1
 
 I want a Dutch word clock.
 I do not like vertical text. Is it possible to fit all this on 8x8?
@@ -80,7 +80,7 @@ At startup the user can press the FLASH button to set the hour and minute.
 
 
 
-## Prototype 2
+## Model 2
 
 Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
 
@@ -156,7 +156,7 @@ Conclusions:
 
 
 
-## Prototype 3
+## Model 3
 
 Finally, I received the NeoPixels matrix.
 
@@ -447,6 +447,40 @@ Finally I drilled holes next to the ESP8266 module.
 See below the end result of my mods.
 
 ![Mods](imgs/mod.jpg)
+
+
+## Model 4
+
+We need to hook the NeoPixel board to our modded Wemos mini.
+I originally did not intend to, but I did, in the end, add a level shifter.
+The breadboards suggested it was not necessary, the data sheet said it was.
+I played save, a [level shifter](https://www.aliexpress.com/item/1972789887.html) 
+is not that expensive, the bigger problem was putting all the electronics together;
+I did not yet feel like making a PCB myself.
+
+This is the schematics I came up with - do note that I replaced the diode with a
+wire as described in [modding](#modding-the-board).
+
+[Schematics](imgs/schematics.jpg)
+
+I added the level shifter in a similar manner as that I added the expansion board for the button.
+But this boards has no mechanical stress, so I used only two wires to tie it to the ESP board.
+I used the button expansion board (I should have made it bigger) for the other two components:
+the resistor to protect the NeoPixels against over-voltage and the capacitor
+to mitigate current swings (when the whole NeoPixel board switches on).
+See [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)
+for details on these two components.
+
+I added one more "component" on the button expansion board, a four pin header as
+the connector towards the NeoPixel board. Pin three is a dummy, so that the connector
+can not be inserted up-side-down. The end result, the Wemos mini with the two 
+expansion boards is shown in the photo below.
+
+![The Wemos with the two expansion boards](imgs/board.jpg)
+
+Next step is to fit that in a 3D printed case. Of course, we already had the
+[front side](#3d-printing), but I still needed to make the [back side](https://a360.co/2P95Akd).
+
 
 
 
