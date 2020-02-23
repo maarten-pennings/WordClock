@@ -218,7 +218,8 @@ The first parameter is a quite compact string. See below, as an example, the str
 
 The first part of this string, before the comma, defines the (standard) timezone and the daylight saving.
 In the example, the (standard) timezone is known as `CET`, and you need to subtract 1 (`-1`) to get to UTC.
-The daylight saving is known as `CEST`, and since it is not explicitly included, it defaults to one (`1`) top of the standard time.
+The daylight saving is known as `CEST`, and since it is not explicitly included, 
+it defaults to one (`1`) on top of the standard time.
 
 After the comma we find the start moment of the daylight saving period: it starts at month `3` (March), week `5`, on Sunday (day `0`).
 The `M` tells that the month, week, day notation with `.` is used.
