@@ -7,17 +7,17 @@ Here is an example of a commercial [product](https://qlocktwo.com/).
 
 ## Table of contents
 
- - [1. Introduction](#1.-Introduction) - What is this project about
- - [2. Model 1](#2.-Model-1) - My first experiment
- - [3. Model 2](#3.-Model-2) - Improved lettering
- - [4. 3D printing](#4.-3D-printing) - 3D printed lettering
- - [5. NeoPixel power](#5.-NeoPixel-power) - How much power is needed for NeoPixels
- - [6. Model 3](#6.-Model-3) - Using the 3D printed lettering
- - [7. Keeping time](#7.-Keeping-time) - How to keep time with NTP
- - [8. Timing](#8.-Timing) - Disable interrupts disables time keeping
- - [9. Power architecture](#9.-Power-architecture) - How to provide power to the NeoPixels
- - [10. Modding the board](#10.-Modding-the-board) - Selecting an ESP8266 board
- - [11. Model 4](#11.-Model-4) - Assembling the electronics and 3D printed case
+ - [1. Introduction](#1-Introduction) - What is this project about
+ - [2. Model 1](#2-Model-1) - My first experiment
+ - [3. Model 2](#3-Model-2) - Improved lettering
+ - [4. 3D printing](#4-3D-printing) - 3D printed lettering
+ - [5. NeoPixel power](#5-NeoPixel-power) - How much power is needed for NeoPixels
+ - [6. Model 3](#6-Model-3) - Using the 3D printed lettering
+ - [7. Keeping time](#7-Keeping-time) - How to keep time with NTP
+ - [8. Timing](#8-Timing) - Disable interrupts disables time keeping
+ - [9. Power architecture](#9-Power-architecture) - How to provide power to the NeoPixels
+ - [10. Modding the board](#10-Modding-the-board) - Selecting an ESP8266 board
+ - [11. Model 4](#11-Model-4) - Assembling the electronics and 3D printed case
 
 
 ## 1. Introduction
