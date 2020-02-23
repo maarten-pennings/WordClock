@@ -1,6 +1,8 @@
 # WordClock
 A clock that tells time in plain text.
 
+![WordClock](imgs/wordclock.jpg)
+
 Here is an example of a commercial [product](https://qlocktwo.com/).
 
 
@@ -403,7 +405,7 @@ for other components. But it has several drawbacks:
 
 The VUSB problem is solved by replacing the diode with a wire as described in the previous section.
 
-![Replacing the diode with a wire](imgs/diodes.png)
+![Replacing the diode with a wire](imgs/diodes.jpg)
 
 The flash button is easily added: just solder a button between GND and D3. 
 I added a small board and soldered extra wires, just for mechanical strenngth.
@@ -411,7 +413,7 @@ I added a small board and soldered extra wires, just for mechanical strenngth.
 Finally I drilled holes next to the ESP8266 module.
 This is the end result of my mods.
 
-![Mods](imgs/mod.png)
+![Mods](imgs/mod.jpg)
 
 
 
