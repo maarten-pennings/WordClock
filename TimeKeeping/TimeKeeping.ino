@@ -28,7 +28,8 @@
 //   <dayinyear> ::= J <num>                  // day, with <num> between 1 and 365. February 29 is never counted, even in leap years
 //                 | <num>                    // day, with <num> between 0 and 365. February 29 is counted in leap years
 //                 | M<m-num>.<w-num>.<d-num> // day <d-num> of week <w-num> of month <m-num>. Day <d-num> is 0(Sun)..6(Sat). Week <w-num> is 1..5 (week 1 is the first week in which day <d-num> occurs). Month <m-num> 1..12.
-//   <time>      ::= hh[:mm[:ss]]             // when, in the local time, the change to dst occurs. If omitted, the default is 02:00:00. 
+//   <time>      ::= hh[:mm[:ss]]             // when, in the local time, the change to dst occurs. If omitted, the default is 02:00:00.
+// end
 
 void setup() {
   Serial.begin(115200);
