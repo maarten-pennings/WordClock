@@ -461,7 +461,7 @@ I did not yet feel like making a PCB myself.
 This is the schematics I came up with - do note that I replaced the diode with a
 wire as described in [modding](#modding-the-board).
 
-[Schematics](imgs/schematics.jpg)
+![Schematics](imgs/schematics.jpg)
 
 I added the level shifter in a similar manner as that I added the expansion board for the button.
 But this boards has no mechanical stress, so I used only two wires to tie it to the ESP board.
@@ -481,6 +481,7 @@ expansion boards is shown in the photo below.
 Next step is to fit that in a 3D printed case. Of course, we already had the
 [front side](#3d-printing), but I still needed to make the [back side](https://a360.co/2P95Akd).
 
+![PCB in the back side](imgs/back.jpg)
 
 
 
