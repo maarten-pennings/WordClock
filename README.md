@@ -438,7 +438,8 @@ See below a photo strip of my soldering.
 
 ![Replacing the diode with a wire](imgs/diodes.jpg)
 
-The flash button is easily added: just solder a button between GND and D3. 
+The flash button is easily added: just solder a button between GND and D3.
+I rely on the internal pull up, to have the input high when the button is not pressed.
 I added a small board and soldered extra wires, just for mechanical strength;
 we are going to push that button, and the mounting holes are in the Wemos board.
 
