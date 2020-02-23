@@ -461,7 +461,7 @@ I did not yet feel like making a PCB myself.
 This is the schematics I came up with - do note that I replaced the diode with a
 wire as described in [modding](#modding-the-board).
 
-![Schematics](imgs/schematics.jpg)
+![Schematic](imgs/schematic.jpg)
 
 I added the level shifter in a similar manner as that I added the expansion board for the button.
 But this boards has no mechanical stress, so I used only two wires to tie it to the ESP board.
@@ -473,15 +473,24 @@ for details on these two components.
 
 I added one more "component" on the button expansion board, a four pin header as
 the connector towards the NeoPixel board. Pin three is a dummy, so that the connector
-can not be inserted up-side-down. The end result, the Wemos mini with the two 
-expansion boards is shown in the photo below.
+can not be inserted up-side-down. The resukting main board, the Wemos mini with the two 
+expansion boards, is shown in the photo below.
 
-![The Wemos with the two expansion boards](imgs/board.jpg)
+![The main board](imgs/board.jpg)
 
 Next step is to fit that in a 3D printed case. Of course, we already had the
 [front side](#3d-printing), but I still needed to make the [back side](https://a360.co/2P95Akd).
+In the figure below, we see the main board screwed to the back side (left). On the
+right, the NeoPixel board is plugged into the main board.
 
 ![PCB in the back side](imgs/back.jpg)
+
+To test the electronics, I wrote a small Arduino [sketch](NeoPixelTest) that switches every LED
+in every NeoPixel on. This allows us to see that the electronics works, and whether
+all individual LEDs are OK. The photo below shows the fully assembled WordClock running
+the self-test.
+
+![Self test](imgs/test.jpg)
 
 
 
