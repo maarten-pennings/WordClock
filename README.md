@@ -384,10 +384,33 @@ a small board (e.g. [Wemos D1 mini](https://www.aliexpress.com/item/32944522985.
 and replace it with a wire. In this way, the VIN is actually converted into a VUSB, and we can
 use that pin to power the NeoPixels
 
-![Replacing the diode with a wire](imgs/diodes.png)
-
 Of course we lose the protection, but in our case, the VIN port will wire to the NeoPixels, 
 and will not be used as input anymore.
+
+## Modding the board
+
+The Wemos D1 mini takes up have the width/height of the 3D printed case. So we have some room for other
+for other components. But it has several drawbacks:
+
+  - There is no VUSB - which we need to power the NeoPixels
+  - There is no (flash) button - which we need to configure the clock
+  - There are no mounting hole.
+
+The VUSB problem is solved by replacing the diode with a wire as described in the previous section.
+
+![Replacing the diode with a wire](imgs/diodes.png)
+
+The flash button is easily added: just solder a button between GND and D3. 
+I added a small board and soldered extra wires, just for mechanical strenngth.
+
+Finally I drilled holes next to the ESP8266 module.
+This is the end result of my mods.
+
+![Mods](imgs/mod.png)
+
+
+
+
 
 
 
