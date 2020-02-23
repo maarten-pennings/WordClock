@@ -6,22 +6,21 @@ A clock that tells time in plain text.
 Here is an example of a commercial [product](https://qlocktwo.com/).
 
 ## Table of contents
-We will do the following experiments
 
- - [Introduction](#Introduction) - What is this project about
- - [Model 1](#Model-1) - My first experiment
- - [Model 2](#Model-2) - Improved lettering
- - [3D printing](#3D-printing) - 3D printed lettering
- - [NeoPixel power](#NeoPixel-power) - How much power is needed for NeoPixels
- - [Model 3](#Model-3) - Using the 3D printed lettering
- - [Keeping time](#Keeping-time) - How to keep time with NTP
- - [Timing](#Timing) - Disable interrupts disables time keeping
- - [Power architecture](#Power-architecture) - How to provide power to the NeoPixels
- - [Modding the board](#Modding-the-board) - Selecting an ESP8266 board
- - [Model 4](#Model-4) - Assembling the electronics and 3D printed case
+ - [1. Introduction](#1.-Introduction) - What is this project about
+ - [2. Model 1](#2.-Model-1) - My first experiment
+ - [3. Model 2](#3.-Model-2) - Improved lettering
+ - [4. 3D printing](#4.-3D-printing) - 3D printed lettering
+ - [5. NeoPixel power](#5.-NeoPixel-power) - How much power is needed for NeoPixels
+ - [6. Model 3](#6.-Model-3) - Using the 3D printed lettering
+ - [7. Keeping time](#7.-Keeping-time) - How to keep time with NTP
+ - [8. Timing](#8.-Timing) - Disable interrupts disables time keeping
+ - [9. Power architecture](#9.-Power-architecture) - How to provide power to the NeoPixels
+ - [10. Modding the board](#10.-Modding-the-board) - Selecting an ESP8266 board
+ - [11. Model 4](#11.-Model-4) - Assembling the electronics and 3D printed case
 
 
-## Introduction
+## 1. Introduction
 
 I had seen WordClocks before, e.g. [here](https://www.instructables.com/id/My-Arduino-WordClock/).
 However, doing the mechanics for 100 LEDs, isolating them (light bleed), wiring them - too much work.
@@ -33,7 +32,7 @@ which words are placed where and how.
 
 
 
-## Model 1
+## 2. Model 1
 
 I want a Dutch word clock.
 I do not like vertical text. Is it possible to fit all this on 8x8?
@@ -94,7 +93,7 @@ At startup the user can press the FLASH button to set the hour and minute.
 
 
 
-## Model 2
+## 3. Model 2
 
 Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
 
@@ -109,7 +108,7 @@ Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mod
 
 
 
-## 3D printing
+## 4. 3D printing
 
 The good thing of the [8x8 LED matrix](https://www.aliexpress.com/item/32681183937.html) is that hardly any mechanics are needed. 
 The downside of the 8x8 LED matrix, is that the 8x8 matrix is small, in my case 32x32 mm².
@@ -133,7 +132,7 @@ I did not yet receive the NeoPixel matrix from AliExpress, so I had to guess whe
 
 
 
-## NeoPixel power
+## 5. NeoPixel power
 
 One thing that worries me about the NeoPixels is power usage. I tasked myself with measuring it.
 
@@ -170,7 +169,7 @@ Conclusions:
 
 
 
-## Model 3
+## 6. Model 3
 
 Finally, I received the NeoPixels matrix.
 
@@ -197,7 +196,7 @@ I made a [video](https://youtu.be/TlJQuVb-GIA) of it.
 
 
 
-## Keeping time
+## 7. Keeping time
 
 Now that the NeoPixel solution with 3D printed enclosure seems to work, we needed to tackle the next biggest problem.
 Keeping track of time. There are several solutions:
@@ -323,7 +322,7 @@ SET
 All in all, we have a firm basis for having an accurate time.
 
 
-## Timing
+## 8. Timing
 
 Neopixels are controlled via a single serial line. One neoPixel has three LEDs (red, green and blue), whose brightness
 can be controlled from 0..255. So to configure one NeoPixel, it needs to be send 3x8 bits. Since there is no clock, 
@@ -392,7 +391,7 @@ My guess is that on ESP8266 we do not suffer from losing time.
 Marc did an experiment, continuously flashing NeoPixels, and indeed found no time drift.
 
 
-## Power architecture
+## 9. Power architecture
 
 We are going to use an ESP8266 for the WordClock. ESP8266s are easily and cheaply available, and they have WiFi.
 That allows us to use NTP (time syncing) which makes them well suited for maintaining time for our clock.
@@ -436,7 +435,7 @@ Of course we lose the protection, but in our case, the VIN port will wire to the
 and will not be used as input anymore.
 
 
-## Modding the board
+## 10. Modding the board
 
 The Wemos D1 mini takes up half the width/height of the 3D printed case. So we have some room 
 for other components. But the [Wemos mini](https://www.aliexpress.com/item/32944522985.html) 
@@ -462,7 +461,7 @@ See below the end result of my mods.
 ![Mods](imgs/mod.jpg)
 
 
-## Model 4
+## 11. Model 4
 
 We need to hook the NeoPixel board to our modded Wemos mini.
 I originally did not intend to, but I did, in the end, add a level shifter.
@@ -512,7 +511,7 @@ the self-test.
 
 ![Self test](imgs/test.jpg)
 
-There is also a [video](https://youtu.be/40TDKY0Gjv4).
+There is also a [video](https://youtu.be/40TDKY0Gjv4) of the device running the self-test.
 
 
 
