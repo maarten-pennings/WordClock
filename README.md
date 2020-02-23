@@ -210,17 +210,21 @@ Actually up to three servers can be passed. The timezone and DST configuration i
   configTime(TZ, SVR1, SVR2, SVR3);
 ```
 
-The first parameter is a quite compact string. See below the string for Amsterdam.
+The first parameter is a quite compact string. See below, as an example, the string for Amsterdam.
 
 ```
   #define TZ "CET-1CEST,M3.5.0,M10.5.0/3" // Amsterdam
 ```
 
-The (standard) timezone is known as CET, and you need to subtract 1 to get UTC.
-The daylight saving is known as CEST, and since it is not explicitly included, it defaults to one top of the standard time.
-After the comma we find the start moment of the daylight saving period: it starts at month 3 (March), week 5, on Sunday (day 0).
-After the next comma, we find when daylight saving stops: at month 10 (October), week 5, day 0 (Sunday).
-The start is at 02:00:00 (default), the stop is explicit at 03:00:00.
+The first part of this string, before the comma, defines the (standard) timezone and the daylight saving.
+In the example, the (standard) timezone is known as `CET`, and you need to subtract 1 (`-1`) to get to UTC.
+The daylight saving is known as `CEST`, and since it is not explicitly included, it defaults to one (`1`) top of the standard time.
+
+After the comma we find the start moment of the daylight saving period: it starts at month `3` (March), week `5`, on Sunday (day `0`).
+The `M` tells that the month, week, day notation with `.` is used.
+After the next comma, we find when daylight saving stops: at month `10` (October), week `5`, day `0` (Sunday).
+Also here in `M` and `.` notation.
+The start is at 02:00:00 (default), the stop is explicit at 03:00:00 (`/3`).
 
 See the [source](TimeKeeping) for more details on this string.
 
