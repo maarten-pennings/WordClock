@@ -24,9 +24,9 @@ which words are placed where and how.
 I want a Dutch word clock.
 I do not like vertical text. Is it possible to fit all this on 8x8?
 
-For the hours, we need words `one` to `twelve`. That is 48 characters - note we are writing `vĳf`, not `vijf`.
+For the hours, we need words `een` (1) to `twaalf` (12). That is 48 characters - note we are writing `vĳf`, not `vijf`.
 This means that we can not have words for all 60 minutes. Let's try to go for multiples of 5 only.
-In Dutch this means `vĳf` (`over`), `tien` (over), `kwart` (over), tien (voor `half`), vĳf (voor half), half, vĳf (`over` half), etc.
+In Dutch this means `vĳf` (`over`), `tien` (over), `kwart` (over), tien (`voor` half), vĳf (voor half), `half`, vĳf (`over` half), etc.
 That is 24 characters.
 
 Oops, 24+48 is 72, and we only have 64. 
@@ -50,7 +50,7 @@ Note that `vĳf`, `tien`, and `kwart` need to come before `over` and `voor`, and
 So there is not much room for alternatives.
 
 Let's next look at the hours. They need to come after the minutes.
-This is the graph.
+The complete graph is shown below.
 
 ![Hours graph](imgs/hours.png)
 
@@ -106,7 +106,7 @@ On top of that: the LEDs are full RGB and only a single wire to control all LEDs
 
 This NeoPixel matrix is big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
-transparent diffuser. This is the [model](https://a360.co/2R9Nksa).
+transparent diffuser. The [design](https://a360.co/2R9Nksa) is made in Fusion 360.
 
 I was quite pleased with the result. The print resolution is sufficient to print the letters. 
 And the transparency is enough to see through.
@@ -168,10 +168,10 @@ Unfortunately, the resistors are not centered, so the 3D print does not fit well
 
 So, I made a new [3D model](https://a360.co/2RQO6uB).
 
-This is the wiring I used; the resistor is 470 Ω, the capacitor 1000 µF 
+See below for the wiring; the resistor is 470 Ω, the capacitor 1000 µF 
 (see [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)).
-Note: The Neopixels run at 5v0, and the required signal level is at 70%, or 5v0*70%=3v5.
-Since the ESP8266 runs on 3v3, we are actually below spec.
+Note: The Neopixels run at 5V0, and the required signal level is at 70%, or 5V0 x 70%=3V5.
+Since the ESP8266 runs on 3V3, we are actually below spec.
 
 ![NeoPixel wiring](imgs/NeoWires.png)
 
@@ -179,27 +179,27 @@ I adapted the [software](WordClockNeo) and did a try-out.
 
 ![Running NeoPixel](imgs/proto3.jpg)
 
-Here is the [video](https://youtu.be/TlJQuVb-GIA).
+I made a [video](https://youtu.be/TlJQuVb-GIA) of it.
 
 
 
 ## Keeping time
 
 Now that the NeoPixel solution with 3D printed enclosure seems to work, we needed to tackle the next biggest problem.
-Keeping track of time. There are several solutions
+Keeping track of time. There are several solutions:
 
- - Hand set the time, and use the crystal.  
+ - Hand set the time, and use the built-in CPU crystal  
    Plus: No extra components needed.  
-   Minus: Needs hand setting. Does not know about daylight saving time.
+   Minus: Needs hand setting. Does not know about daylight saving time ("DST").
  - Use a [DS1307](https://www.aliexpress.com/item/32827794525.html) or [DS1302](https://www.aliexpress.com/item/32728498431.html) time tracking chip  
    Plus: Keeps time, even when not mains powered (small battery).  
    Minus: Needs hand setting once and does not know about daylight saving time.   
- - Use time stamp from webservers (e.g. HEAD of google.nl)  
+ - Use time stamp from webservers (e.g. http HEAD of google.nl)  
    Plus: No extra components needed (assuming ESP8266), no hand setting needed.  
    Minus: Web servers publish UTC, not local time. So adaptations for time zone and DST needed.
  - Use NTP servers  
    Plus: Servers are made for it. No extra components needed (assuming ESP8266), no hand setting needed.  
-   Minus: NTP servers publish UTC, not local time.
+   Minus: NTP servers publish UTC, so again, adaptations for time zone and DST are needed.
 
 When I found out the ESP8266 `<time.h>` actually includes NTP
 and that the implementation has a single string parameter to configure time zone as well as DST,
@@ -212,15 +212,15 @@ Actually up to three servers can be passed. The timezone and DST configuration i
   configTime(TZ, SVR1, SVR2, SVR3);
 ```
 
-The first parameter is a quite compact string. See below, as an example, the string for Amsterdam.
+The first parameter (`TZ`) is a quite compact string. As an example, let's examine the string for Amsterdam.
 
 ```
   #define TZ "CET-1CEST,M3.5.0,M10.5.0/3" // Amsterdam
 ```
 
-The first part of this string, before the comma, defines the (standard) timezone and the daylight saving.
+The first part of this string, before the comma, defines the (standard) timezone and the daylight saving timezone.
 In the example, the (standard) timezone is known as `CET`, and you need to subtract 1 (`-1`) to get to UTC.
-The daylight saving is known as `CEST`, and since it is not explicitly included, 
+The daylight saving timezone is known as `CEST`, and since it is not explicitly included, 
 it defaults to one (`1`) on top of the standard time.
 
 After the comma we find the start moment of the daylight saving period: it starts at month `3` (March), week `5`, on Sunday (day `0`).
@@ -229,7 +229,10 @@ After the next comma, we find when daylight saving stops: at month `10` (October
 Also here in `M` and `.` notation.
 The start is at 02:00:00 (default), the stop is explicit at 03:00:00 (`/3`).
 
-See the [source](TimeKeeping) for more details on this string.
+See the [source](TimeKeeping) for more 
+[details](https://github.com/maarten-pennings/WordClock/blob/master/TimeKeeping/TimeKeeping.ino#:~:text=TZ%20specification,end) 
+on this string. The easiest way to play with this yourself is to change the string so that the timezone change (to or from DST)
+is a couple of minutes from now. For this it is good to know that you can enter `M3.5.0/17:34`.
 
 Here is the output of the script
 ```
@@ -284,11 +287,11 @@ SET
 
 
  - At first, the time is not yet set, so we get "random" value (probably the date/time corresponding with value 0).
-   The script uses the heuristic that any time before 2020 means 'not synced'.
+   My sketch uses the heuristic that any time before 2020 means 'not synced'.
    Note that the time keeping (stepping a second every second) happens, even though the time has not yet been SET.
  - It takes 5 seconds before we receive the first message from one of the NTP servers. 
  - At 2020-02-17 12:43:48, an NTP message arrives (see the SET). The time is known.
-   Since 17 Feb is before DST start "month 3 (March), week 5, on Sunday (day 0)", daylight saving is indeed off.
+   Since 17 Feb is before DST start "month 3 (March), week 5, on Sunday (day 0)", daylight saving is indeed off `(dst=0)`.
  - At around 12:44:00 the script executes a test: it switches off WiFi.
    The time is maintained by the CPU (probably: crystal, timer, interrupt).
    So even without network, time is kept.
@@ -303,6 +306,7 @@ SET
  - Note that one hour later (2020-02-17 13:44:14) the system (asks for and) receives the next NTP message.
    See the SET. The local clock is synced.
 
+All in all, we have a firm basis for having an accurate time.
 
 
 ## Timing
@@ -321,7 +325,8 @@ I captured the clock signal on my logic analyser.
 
 We notice the following
 
- - The bit clock is ~783kHz, which is close to the 800kHz from the documentation.
+ - The bit clock is ~781kHz, which is close to the 800kHz from the documentation.
+ - Note that the measured T1H is 0.89 µs, seems out of spec. It should be 0.7µs ± 150ns, that is 550ns..850ns, so 890 is too long.
  - The protocol is simple: the 3x8 bits are send, no overhead bits.
  - One NeoPixel thus takes 24/800k = 30µs to configure.
  - Pixel timing is confirmed in the capture: the whole transmission takes just over 30µs.
@@ -349,28 +354,49 @@ Suppose we animate our NeoPixel display at 30fps. That would be 30 x 2 = 60 ms n
 Suppose the internal clock is really at stand still; then it would delay 60/1000 = 6%.
 The NTP updates are every hour, so we would be late by 60x60 x 6% = 216 seconds or 3.6 minutes.
 
+I found this [topic](https://forums.adafruit.com/viewtopic.php?f=47&t=42720#p212310).
+It seems that the situation on the ESP8266 is a bit different.
+It has a function `micros_overflow_tick()` which seems to be called periodically.
+It seems to _monitor_ a hardware timer `system_get_time()` for overflows.
+If there is an overflow, it increments a variable `micros_overflow_count`.
+The function `millis()` uses `system_get_time()` and `micros_overflow_count` to
+[compute](https://github.com/esp8266/Arduino/blob/d990ff9547cf1bea7f91f3e3ad2c2eb8066c698f/cores/esp8266/core_esp8266_wiring.cpp#L175)
+the elapsed milliseconds.
+
+So, can the ESP8266 also lose time?
+For that it needs to lose a tick on `micros_overflow_count`.
+It loses that when `system_get_time()` overflows without
+`micros_overflow_tick()` having been called.
+It seems that `system_get_time()` counts micro seconds and it has a range of 32 bits.
+So `system_get_time()` overflows every 2³² µs or 1.2 hour.
+I expect the monitor function `micros_overflow_tick()` to be called much more frequently (say every second).
+So losing one interrupt causes no harm at all, there would be 3599 to detect the overflow.
+
+My guess is that on ESP8266 we do not suffer from losing time.
+Marc did an experiment, continuously flashing NeoPixels, and indeed found no time drift
+
+
 
 ## Power architecture
 
 We are going to use an ESP8266 for the WordClock. ESP8266s are easily and cheaply available, and they have WiFi.
-That allows us to use NTP (time syncing) which makes them well suited for our clock.
+That allows us to use NTP (time syncing) which makes them well suited for maintaining time for our clock.
 
 The ESP8266 runs on 3V3, but typically comes on boards that are powerd via USB (and thus 5V).
-These boards have a voltage regulator that converts 5V to 3V3. 
-
-The boards also have a VIN that connects to the regulator. This allows us to use an external power supply
-(6V-12V) instead of power over USB.
+These boards have a voltage regulator that converts 5V to 3V3. The boards also have a VIN that 
+connects to the regulator. This allows us to use an external power supply (6V-12V) instead of 
+power over USB.
 
 ![Power architecture](imgs/powerarch.png)
 
 Note that there is a diode between the USB port and VIN. 
 If you would externally power the NodeMCU board via VIN (say 9V), and you would also have connected the
-USB port to a PC (for the Serial port) the external 9V would also be on the PCs USB port, possibly damaging it.
-So, the diode protects your PC's USB port against over voltage.
+USB port to a PC (e.g. for debugging using the Serial port) the external 9V would also be on the PCs USB port, 
+possibly damaging it. The diode protects your PC's USB port against over-voltage.
 
-There is an extra effect: the diode has a voltage drop. Typically, a schottky diode is used, which has 
-a voltage drop of 0.3V. So if you plug in USB (5V), the voltage regulator has 4V7 is input, which is still
-enough to have 3V3 out. But VIN will be at 4V7.
+There is an extra effect: the diode has a voltage drop. Typically, a Schottky diode is used, which has 
+a voltage drop of only 0.3V. So if you plug in USB (5V), the voltage regulator has 4V7 as input, which is still
+enough to have 3V3 out. The side effect is that VIN will be at 4V7.
 
 The NeoPixels need 5V. It would be easiest to tab that from the USB port. Some boards do have a pin for that.
 I call it VUSB in the diagram above. However not all (big) boards do have a VUSB pin, and the smaller boards 
@@ -378,15 +404,15 @@ typically never have one.
 
 We could use VIN as _output_ instead of _input_, and power the NeoPixels with VIN. 
 This means the NeoPixels run on 4V7, which is acceptable.
-That level is actually good, because the NeoPixel _data_ pin (DIN) requires 70% of its VDD.
-And that would now be 70% x 4V7 = 3V29, which is below the signalling level of the ESP8266, which runs on 3V3.
+That level is actually interesting, because the NeoPixel _data_ pin (DIN) requires at least 70% of VDD.
+And that would now be 70% x 4V7 = 3V29, which is below the signaling level of the ESP8266, which runs on 3V3.
 
-However, before we get enthousiastic about this setup, there is one major drawback.
-The whole NeoPixel chain would draw current through the diode, which is typically limited to 250mA.
-That does not match well with the (above) computed maximum current of 2500mA
-(the dissipated power is 0.3V x 2.5A = 0.7W).  
+However, before we get enthusiastic about this setup, there is one major drawback.
+The whole NeoPixel chain would draw current through the diode. The diode is typically limited to 250mA.
+That does not match well with the ([above](#neopixel-power)) computed maximum current of 2500mA
+(the power the tiny diode would need to dissipate would be 0.3V x 2.5A = 0.7W).  
 
-The bigger boards with VUSB pins are too big for our 3D printed case. So what I propose is to use
+The bigger boards with VUSB pins are too big for our 3D printed case. So I propose to use
 a small board (e.g. [Wemos D1 mini](https://www.aliexpress.com/item/32944522985.html)), remove the diode,
 and replace it with a wire. In this way, the VIN is actually converted into a VUSB, and we can
 use that pin to power the NeoPixels
@@ -394,24 +420,27 @@ use that pin to power the NeoPixels
 Of course we lose the protection, but in our case, the VIN port will wire to the NeoPixels, 
 and will not be used as input anymore.
 
+
 ## Modding the board
 
-The Wemos D1 mini takes up have the width/height of the 3D printed case. So we have some room for other
-for other components. But it has several drawbacks:
+The Wemos D1 mini takes up half the width/height of the 3D printed case. So we have some room 
+for other components. But the Wemos mini has several drawbacks:
 
   - There is no VUSB - which we need to power the NeoPixels
   - There is no (flash) button - which we need to configure the clock
   - There are no mounting hole.
 
 The VUSB problem is solved by replacing the diode with a wire as described in the previous section.
+See below a photo strip of my soldering.
 
 ![Replacing the diode with a wire](imgs/diodes.jpg)
 
 The flash button is easily added: just solder a button between GND and D3. 
-I added a small board and soldered extra wires, just for mechanical strenngth.
+I added a small board and soldered extra wires, just for mechanical strength;
+we are going to push that button, and the mounting holes are in the Wemos board.
 
 Finally I drilled holes next to the ESP8266 module.
-This is the end result of my mods.
+See below the end result of my mods.
 
 ![Mods](imgs/mod.jpg)
 
