@@ -5,6 +5,20 @@ A clock that tells time in plain text.
 
 Here is an example of a commercial [product](https://qlocktwo.com/).
 
+## Table of contents
+We will do the following experiments
+
+ - [Introduction](#Introduction) - What is this project about
+ - [Model 1](#Model-1) - My first experiment
+ - [Model 2](#Model-2) - Improved lettering
+ - [3D printing](#3D-printing) - 3D printed lettering
+ - [NeoPixel power](#NeoPixel-power) - How much power is needed for NeoPixels
+ - [Model 3](#Model-3) - Using the 3D printed lettering
+ - [Keeping time](#Keeping-time) - How to keep time with NTP
+ - [Timing](#Timing) - Disable interrupts disables time keeping
+ - [Power architecture](#Power-architecture) - How to provide power to the NeoPixels
+ - [Modding the board](#Modding-the-board) - Selecting an ESP8266 board
+ - [Model 4](#Model-4) - Assembling the electronics and 3D printed case
 
 
 ## Introduction
@@ -376,7 +390,6 @@ So losing one interrupt causes no harm at all, there would be 3599 to detect the
 
 My guess is that on ESP8266 we do not suffer from losing time.
 Marc did an experiment, continuously flashing NeoPixels, and indeed found no time drift.
-
 
 
 ## Power architecture
