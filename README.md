@@ -349,31 +349,33 @@ For this reason, the NeoPixel library seems to disable interrupts.
 This means that during an update of the 64 NeoPixel string, interrupts are disabled for 2ms.
 During this 2ms, all interrupts are disabled, so `millis()` might miss ticks.
 
-How many worst case?
-Suppose we animate our NeoPixel display at 30fps. That would be 30 x 2 = 60 ms no interrupts in 1 second.
-Suppose the internal clock is really at stand still; then it would delay 60/1000 = 6%.
-The NTP updates are every hour, so we would be late by 60x60 x 6% = 216 seconds or 3.6 minutes.
-
+How realistic is this problem?
 I found this [topic](https://forums.adafruit.com/viewtopic.php?f=47&t=42720#p212310).
-It seems that the situation on the ESP8266 is a bit different.
+It states that there is a timer interrupt every 1 ms, so if the disable-interrupt-time is 2ms
+we miss interrupts and thus have clock drift. And 64 NeoPixels need about 2ms without interrupts.
+So again. Are we at risk?
+
+It seems that the above discussion is for plain Arduinos; the situation for the ESP8266 is a bit different.
 It has a function `micros_overflow_tick()` which seems to be called periodically.
 It seems to _monitor_ a hardware timer `system_get_time()` for overflows.
 If there is an overflow, it increments a variable `micros_overflow_count`.
+Check the code on your PC, or 
+[here](https://github.com/esp8266/Arduino/blob/d990ff9547cf1bea7f91f3e3ad2c2eb8066c698f/cores/esp8266/core_esp8266_wiring.cpp#L61).
+
 The function `millis()` uses `system_get_time()` and `micros_overflow_count` to
 [compute](https://github.com/esp8266/Arduino/blob/d990ff9547cf1bea7f91f3e3ad2c2eb8066c698f/cores/esp8266/core_esp8266_wiring.cpp#L175)
 the elapsed milliseconds.
 
 So, can the ESP8266 also lose time?
 For that it needs to lose a tick on `micros_overflow_count`.
-It loses that when `system_get_time()` overflows without
-`micros_overflow_tick()` having been called.
+It loses that when `system_get_time()` overflows without `micros_overflow_tick()` having been called.
 It seems that `system_get_time()` counts micro seconds and it has a range of 32 bits.
 So `system_get_time()` overflows every 2³² µs or 1.2 hour.
 I expect the monitor function `micros_overflow_tick()` to be called much more frequently (say every second).
 So losing one interrupt causes no harm at all, there would be 3599 to detect the overflow.
 
 My guess is that on ESP8266 we do not suffer from losing time.
-Marc did an experiment, continuously flashing NeoPixels, and indeed found no time drift
+Marc did an experiment, continuously flashing NeoPixels, and indeed found no time drift.
 
 
 
@@ -424,7 +426,8 @@ and will not be used as input anymore.
 ## Modding the board
 
 The Wemos D1 mini takes up half the width/height of the 3D printed case. So we have some room 
-for other components. But the Wemos mini has several drawbacks:
+for other components. But the [Wemos mini](https://www.aliexpress.com/item/32944522985.html) 
+has several drawbacks:
 
   - There is no VUSB - which we need to power the NeoPixels
   - There is no (flash) button - which we need to configure the clock
