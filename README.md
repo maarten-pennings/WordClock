@@ -485,6 +485,13 @@ right, the NeoPixel board is plugged into the main board.
 
 ![PCB in the back side](imgs/back.jpg)
 
+Below you find a photo showing the back of the device. 
+We see (lower center) the recess for the USB plug.
+On the top center, we find the light guide towards the LED and the 
+hole where the FLASH button surfaces.
+
+![Back sides](imgs/backs.jpg)
+
 To test the electronics, I wrote a small Arduino [sketch](NeoPixelTest) that switches every LED
 in every NeoPixel on. This allows us to see that the electronics works, and whether
 all individual LEDs are OK. The photo below shows the fully assembled WordClock running
@@ -492,7 +499,7 @@ the self-test.
 
 ![Self test](imgs/test.jpg)
 
-
+There is also a [video](https://youtu.be/40TDKY0Gjv4).
 
 
 
