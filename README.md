@@ -18,6 +18,7 @@ Here is an example of a commercial [product](https://qlocktwo.com/).
  - [9. Power architecture](#9-Power-architecture) - How to provide power to the NeoPixels
  - [10. Modding the board](#10-Modding-the-board) - Selecting an ESP8266 board
  - [11. Model 4](#11-Model-4) - Assembling the electronics and 3D printed case
+ - [12. Model 5](#12-Model-5) - Adding the time keeping software
 
 
 ## 1. Introduction
@@ -514,6 +515,92 @@ the self-test.
 There is also a [video](https://youtu.be/40TDKY0Gjv4) of the device running the self-test.
 
 
+## 15. Model 5
 
+Mechanics is complete, let's now add the time keeping software.
+I decided to make a "simple" version first.
+No (dynamic) configuration, no animations.
+Find this sketch in [WordClockSimple](WordClockSimple).
 
+Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case, LED, back and front.
 
+Here is a [video](https://youtu.be/4AUioVwlsqg) with the clock running, comparing it to a DCF77 clock.
+
+Some notes
+ - The blue LED at the back switches on when powered the clock is powered (and initialized).
+ - The blue LED switches off as soon as an NTP sync has occurred, i.e. the local time is known.
+ - The time is then displayed in 5 min resolution.
+ - At 10:52:30 (see the DCF77 clock) the WordClock switches from 10:50 (TIEN-VOOR-ELF) to 10:55 (VIJF-VOOR-ELF).
+ 
+By the way, if you don't like that 10:52:30 is rounded up to 10:55, ..., it's just a `#define` in the code.
+
+Find below the output generated over Serial (when there are `...`, I removed lines)
+
+```
+main: WorkClockSimple v1
+
+neo : init
+led : init
+clk : init
+wifi: init
+
+clk : 1970-01-01 09:00:00 (dst=0) [no NTP sync yet]
+clk : 1970-01-01 09:00:01 (dst=0) [no NTP sync yet]
+clk : 1970-01-01 09:00:02 (dst=0) [no NTP sync yet]
+clk : 1970-01-01 09:00:03 (dst=0) [no NTP sync yet]
+wifi: connected, IP address 192.168.179.102
+clk : 2020-02-24 23:23:42 (dst=0) 23:26 vijf-voor-half-twaalf
+clk : 2020-02-24 23:23:43 (dst=0) 23:26 
+clk : 2020-02-24 23:23:44 (dst=0) 23:26 
+clk : 2020-02-24 23:23:45 (dst=0) 23:26 
+...
+clk : 2020-02-24 23:24:27 (dst=0) 23:26 
+clk : 2020-02-24 23:24:28 (dst=0) 23:26 
+clk : 2020-02-24 23:24:29 (dst=0) 23:26 
+clk : 2020-02-24 23:24:30 (dst=0) 23:27 vijf-voor-half-twaalf
+clk : 2020-02-24 23:24:31 (dst=0) 23:27 
+clk : 2020-02-24 23:24:32 (dst=0) 23:27 
+clk : 2020-02-24 23:24:33 (dst=0) 23:27 
+...
+clk : 2020-02-24 23:25:27 (dst=0) 23:27 
+clk : 2020-02-24 23:25:28 (dst=0) 23:27 
+clk : 2020-02-24 23:25:29 (dst=0) 23:27 
+clk : 2020-02-24 23:25:30 (dst=0) 23:28 vijf-voor-half-twaalf
+clk : 2020-02-24 23:25:31 (dst=0) 23:28 
+clk : 2020-02-24 23:25:32 (dst=0) 23:28 
+clk : 2020-02-24 23:25:33 (dst=0) 23:28 
+...
+clk : 2020-02-24 23:26:27 (dst=0) 23:28 
+clk : 2020-02-24 23:26:28 (dst=0) 23:28 
+clk : 2020-02-24 23:26:29 (dst=0) 23:28 
+clk : 2020-02-24 23:26:30 (dst=0) 23:29 vijf-voor-half-twaalf
+clk : 2020-02-24 23:26:31 (dst=0) 23:29 
+clk : 2020-02-24 23:26:32 (dst=0) 23:29 
+clk : 2020-02-24 23:26:33 (dst=0) 23:29 
+...
+clk : 2020-02-24 23:27:27 (dst=0) 23:29 
+clk : 2020-02-24 23:27:28 (dst=0) 23:29 
+clk : 2020-02-24 23:27:29 (dst=0) 23:29 
+clk : 2020-02-24 23:27:30 (dst=0) 23:30 half-twaalf
+clk : 2020-02-24 23:27:31 (dst=0) 23:30 
+clk : 2020-02-24 23:27:32 (dst=0) 23:30 
+clk : 2020-02-24 23:27:33 (dst=0) 23:30 
+```
+
+Notes on the output
+ - The first line identifies the program and version.
+ - The next 4 lines signal the initialization of the hardware blocks (`setup()`).
+ - Then the device is operational (switches to `loop()`).
+ - We see that the first couple of seconds, there is no WiFi yet.
+ - The WiFi connect occurs, and we see the assigned IP number.
+ - Quickly after that, we have the first NTP sync, and the clock knows local time.
+ - As output we see `clk : 2020-02-24 23:23:42 (dst=0) 23:26 vijf-voor-half-twaalf`
+    - The `clk` identifies the "driver" that prints the message.
+    - The `2020-02-24 23:23:42 (dst=0)` is the full (local) date and time locally know, also see we do not yet have daylight saving.
+    - The `23:26` is the "rounded" up time (since we have a resolution of 5 min, 2.5min is added).
+    - Each time when hours or minutes change, the display is updated, the text `vijf-voor-half-twaalf`, shows which NeoPixels
+ - At 23:24:30 there is another minutes change (to `23:27`) and the display is refreshed to `vijf-voor-half-twaalf`.
+ - At 23:25:30 there is another minutes change (to `23:28`) and the display is refreshed to `vijf-voor-half-twaalf`.
+ - At 23:26:30 there is another minutes change (to `23:29`) and the display is refreshed to `vijf-voor-half-twaalf`.
+ - At 23:27:30 there is another minutes change (to `23:30`), so now the display is updated to `half-twaalf`.
+ 
