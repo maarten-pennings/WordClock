@@ -1,4 +1,4 @@
-// WorkClockSimple.ino - A WordClock using NeoPixels, keeping time via NTP - but simple, no runtimeconfig
+// WordClockSimple.ino - A WordClock using NeoPixels, keeping time via NTP - but simple, no runtimeconfig
 #define VERSION 1
 
 #include <time.h>
@@ -254,7 +254,7 @@ void letters_update(int hour, int min) {
 
 void setup() {
   Serial.begin(115200);
-  Serial.printf("\n\nmain: WorkClockSimple v%d\n\n",VERSION);
+  Serial.printf("\n\nmain: WordClockSimple v%d\n\n",VERSION);
 
   neo_init();
   led_init();
