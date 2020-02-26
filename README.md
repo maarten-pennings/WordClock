@@ -3,7 +3,11 @@ A clock that tells time in plain text. In Dutch, e.g. "KWART OVER VĲF".
 
 ![WordClock](imgs/wordclock.jpg)
 
-Here is an example of a commercial [product](https://qlocktwo.com/).
+Commercial [products](https://qlocktwo.com/) exist, but I'm making my own. 
+There is a [video](https://youtu.be/0UkmPO7tGsg) looking at the mechanics,
+and a [video](https://youtu.be/4AUioVwlsqg) comparing it to a DCF77 clock.
+
+
 
 ## Table of contents
 
@@ -21,6 +25,7 @@ Here is an example of a commercial [product](https://qlocktwo.com/).
  - [12. Model 5](#12-Model-5) - Adding the time keeping software
 
 
+
 ## 1. Introduction
 
 I had seen WordClocks before, e.g. [here](https://www.instructables.com/id/My-Arduino-WordClock/).
@@ -28,8 +33,8 @@ However, doing the mechanics for 100 LEDs, isolating them (light bleed), wiring 
 
 Then I stumbled on a simpler [version](http://www.espruino.com/Tiny+Word+Clock).
 It uses an 8x8 LED matrix, so very little mechanics to do.
-The downside is that 8x8 LEDs means we are very restricted on the _model_: 
-which words are placed where and how.
+The downside is that 8x8 LEDs means we are very restricted on the _lettering_: 
+which letters (words) are placed where and how.
 
 
 
@@ -96,13 +101,13 @@ At startup the user can press the FLASH button to set the hour and minute.
 
 ## 3. Model 2
 
-Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below solution.
+Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm and found the below lettering solution.
 
 ![model 2](imgs/model2.jpg)
 
 This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
 
-My next prototype uses Marc's model. It is supported by the same [sketch](WordClockLed) as the first prototype.
+My next prototype uses Marc's lettering. It is supported by the same [sketch](WordClockLed) as the first prototype.
 
 At startup you can not only set hour and minute, but also mode: clock or a fast demo.
 Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mode.
@@ -120,7 +125,7 @@ On top of that: the LEDs are full RGB and only a single wire to control all LEDs
 
 This NeoPixel matrix is big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
-transparent diffuser. The [design](https://a360.co/2R9Nksa) is made in Fusion 360.
+transparent diffuser (also _inside_ the letters). The [design](https://a360.co/2R9Nksa) is made in Fusion 360.
 
 I was quite pleased with the result. The print resolution is sufficient to print the letters. 
 And the transparency is enough to see through.
@@ -323,6 +328,7 @@ SET
 All in all, we have a firm basis for having an accurate time.
 
 
+
 ## 8. Timing
 
 Neopixels are controlled via a single serial line. One neoPixel has three LEDs (red, green and blue), whose brightness
@@ -392,6 +398,7 @@ My guess is that on ESP8266 we do not suffer from losing time.
 Marc did an experiment, continuously flashing NeoPixels, and indeed found no time drift.
 
 
+
 ## 9. Power architecture
 
 We are going to use an ESP8266 for the WordClock. ESP8266s are easily and cheaply available, and they have WiFi.
@@ -436,6 +443,7 @@ Of course we lose the protection, but in our case, the VIN port will wire to the
 and will not be used as input anymore.
 
 
+
 ## 10. Modding the board
 
 The Wemos D1 mini takes up half the width/height of the 3D printed case. So we have some room 
@@ -460,6 +468,7 @@ Finally I drilled holes next to the ESP8266 module.
 See below the end result of my mods.
 
 ![Mods](imgs/mod.jpg)
+
 
 
 ## 11. Model 4
@@ -513,6 +522,7 @@ the self-test.
 ![Self test](imgs/test.jpg)
 
 There is also a [video](https://youtu.be/40TDKY0Gjv4) of the device running the self-test.
+
 
 
 ## 12. Model 5
@@ -604,4 +614,7 @@ Notes on the output
  - At 23:25:30 there is another minutes change (to `23:28`) and the display is refreshed to `vijf-voor-half-twaalf`.
  - At 23:26:30 there is another minutes change (to `23:29`) and the display is refreshed to `vijf-voor-half-twaalf`.
  - At 23:27:30 there is another minutes change (to `23:30`), so now the display is updated to `half-twaalf`.
- 
+
+
+
+(end)
