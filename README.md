@@ -1,5 +1,5 @@
 # WordClock
-A clock that tells time in plain text. In Dutch, e.g. "KWART OVER VĲF".
+A clock that tells time in plain text. In Dutch, e.g. "TIEN OVER HALF TWAALF".
 
 ![WordClock](imgs/wordclock.jpg)
 
