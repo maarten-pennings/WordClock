@@ -480,7 +480,7 @@ See below the end result of my mods.
 We need to hook the NeoPixel board to our modded Wemos mini.
 I originally did not intend to, but I did, in the end, add a level shifter.
 The breadboards suggested it was not necessary, the data sheet said it was.
-I played save, a [level shifter](https://www.aliexpress.com/item/1972789887.html) 
+I played safe, a [level shifter](https://www.aliexpress.com/item/1972789887.html) 
 is not that expensive, the bigger problem was putting all the electronics together;
 I did not yet feel like making a PCB myself.
 
@@ -491,23 +491,24 @@ wire as described in [modding](#modding-the-board).
 
 I added the level shifter in a similar manner as that I added the expansion board for the button.
 But this boards has no mechanical stress, so I used only two wires to tie it to the ESP board.
+
 I used the button expansion board (I should have made it bigger) for the other two components:
 the resistor to protect the NeoPixels against over-voltage and the capacitor
 to mitigate current swings (when the whole NeoPixel board switches on).
 See [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)
 for details on these two components.
 
-I added one more "component" on the button expansion board, a four pin header as
+I added one more "component" on the button expansion board: a four pin header as
 the connector towards the NeoPixel board. Pin three is a dummy, so that the connector
-can not be inserted up-side-down. The resukting main board, the Wemos mini with the two 
+can not be inserted up-side-down. The resulting board, the Wemos mini with the two 
 expansion boards, is shown in the photo below.
 
-![The main board](imgs/board.jpg)
+![The board](imgs/board.jpg)
 
-Next step is to fit that in a 3D printed case. Of course, we already had the
+Next step is to fit this board in a 3D printed case. Of course, we already had the
 [front side](#3d-printing), but I still needed to make the [back side](https://a360.co/2P95Akd).
 In the figure below, we see the main board screwed to the back side (left). On the
-right, the NeoPixel board is plugged into the main board.
+right, the NeoPixel board is plugged into the board.
 
 ![PCB in the back side](imgs/back.jpg)
 
