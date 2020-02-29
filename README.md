@@ -92,7 +92,7 @@ The wiring is straightforward:
 I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
 at approximately 600x so that all states appear in a one minute movie.
 
-I also made a [real clock](WordClockLed) and a
+I also made a [real clock](sketches/WordClockLed) and a
 [video](https://youtu.be/wVqeRSxwd_Y) that captures one state change.
 This really keeps the time (based on the ESP8266 crystal).
 At startup the user can press the FLASH button to set the hour and minute.
@@ -107,7 +107,7 @@ Marc relaxed the rules, he allows diagonal words. He wrote a solver algorithm an
 
 This eliminates the paired letters and split words. Still a missing space, and still `uur` missing.
 
-My next prototype uses Marc's lettering. It is supported by the same [sketch](WordClockLed) as the first prototype.
+My next prototype uses Marc's lettering. It is supported by the same [sketch](sketches/WordClockLed) as the first prototype.
 
 At startup you can not only set hour and minute, but also mode: clock or a fast demo.
 Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mode.
@@ -156,8 +156,8 @@ two LEDs in the NeoPixels: green (0x00FF00) and blue (0x0000FF) for 1 to 16 NeoP
 Finally I measured when more than 1 LED is on: purple (0xFF00FF) and white (0xFFFFFF).
 
 All in all, 8 experiments, each with 1 to 16 NeoPixels.
-The [script](NeoPixelAmps) was short, but doing all the measurements took quite some time.
-I manually logged all [results](NeoPixelAmps/NeoStats.txt), and then tabulated them in Excel:
+The [script](sketches/NeoPixelAmps) was short, but doing all the measurements took quite some time.
+I manually logged all [results](sketches/NeoPixelAmps/NeoStats.txt), and then tabulated them in Excel:
 
 ![Power usage table](imgs/powertab.png)
 
@@ -194,7 +194,7 @@ Since the ESP8266 runs on 3V3, we are actually below spec.
 
 ![NeoPixel wiring](imgs/NeoWires.png)
 
-I adapted the [software](WordClockNeo) and did a try-out. 
+I adapted the [software](sketches/WordClockNeo) and did a try-out. 
 
 ![Running NeoPixel](imgs/proto3.jpg)
 
@@ -248,8 +248,8 @@ After the next comma, we find when daylight saving stops: at month `10` (October
 Also here in `M` and `.` notation.
 The start is at 02:00:00 (default), the stop is explicit at 03:00:00 (`/3`).
 
-See the [source](TimeKeeping) for more 
-[details](https://github.com/maarten-pennings/WordClock/blob/master/TimeKeeping/TimeKeeping.ino#:~:text=TZ%20specification,end) 
+See the [source](sketches/TimeKeeping) for more 
+[details](https://github.com/maarten-pennings/WordClock/blob/master/sketches/TimeKeeping/TimeKeeping.ino#:~:text=TZ%20specification,end) 
 on this string. The easiest way to play with this yourself is to change the string so that the timezone change (to or from DST)
 is a couple of minutes from now. For this it is good to know that you can enter `M3.5.0/17:34`.
 
@@ -514,7 +514,7 @@ hole where the FLASH button surfaces.
 
 ![Back sides](imgs/backs.jpg)
 
-To test the electronics, I wrote a small Arduino [sketch](NeoPixelTest) that switches every LED
+To test the electronics, I wrote a small Arduino [sketch](sketches/NeoPixelTest) that switches every LED
 in every NeoPixel on. This allows us to see that the electronics works, and whether
 all individual LEDs are OK. The photo below shows the fully assembled WordClock running
 the self-test.
@@ -530,7 +530,7 @@ There is also a [video](https://youtu.be/40TDKY0Gjv4) of the device running the 
 Mechanics is complete, let's now add the time keeping software.
 I decided to make a "simple" version first.
 No (dynamic) configuration, no animations.
-Find this sketch in [WordClockSimple](WordClockSimple).
+Find this sketch in [WordClockSimple](sketches/WordClockSimple).
 
 Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case, LED, back and front.
 
