@@ -1,0 +1,157 @@
+Manually entered log of power measurements of a 4x4 NeoPixel board
+2020 02 11 Maarten Pennings
+
+=== red
+
+Showing  0 leds with ff0000    8.40
+Showing  1 leds with ff0000   22.80
+Showing  2 leds with ff0000   36.95
+Showing  3 leds with ff0000   50.84
+Showing  4 leds with ff0000   64.6
+Showing  5 leds with ff0000   78.4
+Showing  6 leds with ff0000   93.0
+Showing  7 leds with ff0000  106.9
+Showing  8 leds with ff0000  120.2
+Showing  9 leds with ff0000  133.8
+Showing 10 leds with ff0000  147.4
+Showing 11 leds with ff0000  160.2
+Showing 12 leds with ff0000  174.0
+Showing 13 leds with ff0000  187.8
+Showing 14 leds with ff0000  202.0
+Showing 15 leds with ff0000  215.4
+Showing 16 leds with ff0000  228.9
+
+Showing  0 leds with bf0000    8.17
+Showing  1 leds with bf0000   18.77
+Showing  2 leds with bf0000   29.10
+Showing  3 leds with bf0000   39.32
+Showing  4 leds with bf0000   49.50
+Showing  5 leds with bf0000   59.85
+Showing  6 leds with bf0000   70.4
+Showing  7 leds with bf0000   80.7
+Showing  8 leds with bf0000   90.6
+Showing  9 leds with bf0000  100.8
+Showing 10 leds with bf0000  111.1
+Showing 11 leds with bf0000  120.7
+Showing 12 leds with bf0000  130.7
+Showing 13 leds with bf0000  141.1
+Showing 14 leds with bf0000  151.6
+Showing 15 leds with bf0000  161.7
+Showing 16 leds with bf0000  171.8
+
+Showing  0 leds with 7f0000    8.21
+Showing  1 leds with 7f0000   14.93
+Showing  2 leds with 7f0000   21.58
+Showing  3 leds with 7f0000   28.12
+Showing  4 leds with 7f0000   34.67
+Showing  5 leds with 7f0000   41.31
+Showing  6 leds with 7f0000   48.15
+Showing  7 leds with 7f0000   54.91
+Showing  8 leds with 7f0000   61.34
+Showing  9 leds with 7f0000   67.8
+Showing 10 leds with 7f0000   74.5
+Showing 11 leds with 7f0000   80.7
+Showing 12 leds with 7f0000   87.3
+Showing 13 leds with 7f0000   94.1
+Showing 14 leds with 7f0000  100.9
+Showing 15 leds with 7f0000  107.5
+Showing 16 leds with 7f0000  114.0
+
+Showing  0 leds with 3f0000    8.25
+Showing  1 leds with 3f0000   11.22
+Showing  2 leds with 3f0000   14.18
+Showing  3 leds with 3f0000   17.08
+Showing  4 leds with 3f0000   19.98
+Showing  5 leds with 3f0000   22.94
+Showing  6 leds with 3f0000   25.99
+Showing  7 leds with 3f0000   28.92
+Showing  8 leds with 3f0000   31.80
+Showing  9 leds with 3f0000   34.73
+Showing 10 leds with 3f0000   37.68
+Showing 11 leds with 3f0000   40.48
+Showing 12 leds with 3f0000   43.40
+Showing 13 leds with 3f0000   46.42
+Showing 14 leds with 3f0000   49.60
+Showing 15 leds with 3f0000   52.50
+Showing 16 leds with 3f0000   55.53
+
+=== green
+
+Showing  0 leds with 00ff00    8.29
+Showing  1 leds with 00ff00   22.51
+Showing  2 leds with 00ff00   36.49
+Showing  3 leds with 00ff00   50.17
+Showing  4 leds with 00ff00   64.4
+Showing  5 leds with 00ff00   78.5
+Showing  6 leds with 00ff00   92.9
+Showing  7 leds with 00ff00  105.9
+Showing  8 leds with 00ff00  119.0
+Showing  9 leds with 00ff00  132.3
+Showing 10 leds with 00ff00  146.2
+Showing 11 leds with 00ff00  159.5
+Showing 12 leds with 00ff00  172.9
+Showing 13 leds with 00ff00  186.7
+Showing 14 leds with 00ff00  200.3
+Showing 15 leds with 00ff00  213.8
+Showing 16 leds with 00ff00  227.2
+
+=== blue
+
+Showing  0 leds with 0000ff    8.20
+Showing  1 leds with 0000ff   21.88
+Showing  2 leds with 0000ff   35.08
+Showing  3 leds with 0000ff   48.27
+Showing  4 leds with 0000ff   62.0
+Showing  5 leds with 0000ff   75.8
+Showing  6 leds with 0000ff   89.3
+Showing  7 leds with 0000ff  102.8
+Showing  8 leds with 0000ff  116.2
+Showing  9 leds with 0000ff  129.3
+Showing 10 leds with 0000ff  143.3
+Showing 11 leds with 0000ff  155.9
+Showing 12 leds with 0000ff  169.5
+Showing 13 leds with 0000ff  183.1
+Showing 14 leds with 0000ff  196.9
+Showing 15 leds with 0000ff  210.0
+Showing 16 leds with 0000ff  223.0
+
+=== violet
+
+Showing  0 leds with ff00ff    8.19
+Showing  1 leds with ff00ff   35.70
+Showing  2 leds with ff00ff   62.70
+Showing  3 leds with ff00ff   89.1
+Showing  4 leds with ff00ff  116.2
+Showing  5 leds with ff00ff  143.5
+Showing  6 leds with ff00ff  170.5
+Showing  7 leds with ff00ff  196.8
+Showing  8 leds with ff00ff  222.8
+Showing  9 leds with ff00ff  248.8
+Showing 10 leds with ff00ff  275.6
+Showing 11 leds with ff00ff  300.6
+Showing 12 leds with ff00ff  326.3
+Showing 13 leds with ff00ff  352.7
+Showing 14 leds with ff00ff  379.5
+Showing 15 leds with ff00ff  404.7
+Showing 16 leds with ff00ff  429.9
+
+=== white
+
+Showing  0 leds with ffffff    8.12
+Showing  1 leds with ffffff   49.48
+Showing  2 leds with ffffff   89.6
+Showing  3 leds with ffffff  129.1
+Showing  4 leds with ffffff  169.5
+Showing  5 leds with ffffff  210.0
+Showing  6 leds with ffffff  250.3
+Showing  7 leds with ffffff  289.1
+Showing  8 leds with ffffff  327.1
+Showing  9 leds with ffffff  365.0
+Showing 10 leds with ffffff  403.5
+Showing 11 leds with ffffff  440.4
+Showing 12 leds with ffffff  476.9
+Showing 13 leds with ffffff  516.9
+Showing 14 leds with ffffff  553.7
+Showing 15 leds with ffffff  589.6
+Showing 16 leds with ffffff  625.5
+
