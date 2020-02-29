@@ -24,6 +24,10 @@ and a [video](https://youtu.be/4AUioVwlsqg) comparing it to a DCF77 clock.
  - [11. Model 4](#11-Model-4) - Assembling the electronics and 3D printed case
  - [12. Model 5](#12-Model-5) - Adding the time keeping software
 
+Notes
+ - There are several [Arduino sketches](sketches) used during development.
+ - There are some [Python scripts](scripts) used during development.
+
 
 
 ## 1. Introduction
