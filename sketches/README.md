@@ -1,6 +1,6 @@
 # Sketches
 
-This directory contains Arduino sketches used in the WordClock project.
+This directory contains Arduino sketches used in the [WordClock](https://github.com/maarten-pennings/WordClock) project.
 All sketches are intended for an ESP8266.
 
  - [WordClockLed](WordClockLed)  
