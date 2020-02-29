@@ -335,7 +335,7 @@ All in all, we have a firm basis for having an accurate time.
 
 ## 8. Timing
 
-Neopixels are controlled via a single serial line. One neoPixel has three LEDs (red, green and blue), whose brightness
+NeoPixels are controlled via a single serial line. One NeoPixel has three LEDs (red, green and blue), whose brightness
 can be controlled from 0..255. So to configure one NeoPixel, it needs to be send 3x8 bits. Since there is no clock, 
 biphase encoding is used: every bit uses a low and a high signal, so every bit has an edge (actually two). The
 [datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf) shows this picture of biphase encoding:
