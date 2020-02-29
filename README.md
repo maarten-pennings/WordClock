@@ -536,13 +536,18 @@ Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case, LED, back a
 
 Here is a [video](https://youtu.be/4AUioVwlsqg) with the clock running, comparing it to a DCF77 clock.
 
-Some notes
+Some notes on the video
  - The blue LED at the back switches on the clock is powered (and initialized).
  - The blue LED switches off as soon as an NTP sync has occurred, i.e. when the local time is known.
  - The time is then displayed in 5 min resolution.
  - At 10:52:30 (see the DCF77 clock) the WordClock switches from 10:50 (TIEN-VOOR-ELF) to 10:55 (VIJF-VOOR-ELF).
- 
-By the way, if you don't like that 10:52:30 is rounded up to 10:55, ..., it's just a `#define` in the code.
+
+By the way, I made the choice that time is rounded up (instead of floored). 
+See the following animation (made in [python](scripts/clock2.py)) for the difference.
+
+![floor versus round](imgs/clocks2.gif)
+
+If you don't like that 10:52:30 is rounded up to 10:55, ..., it's just a `#define` in the code (`CLK_ROUND`).
 
 Find below the output generated over Serial (when there are `...`, I removed lines)
 
