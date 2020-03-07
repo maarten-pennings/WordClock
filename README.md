@@ -183,13 +183,15 @@ Conclusions:
 
 Finally, I received the NeoPixels matrix.
 
-![NeoPixel 8x8](imgs/pcb8x8.jpg)
+![NeoPixel front](imgs/pcb8x8.jpg)
 
-Unfortunately, the resistors are not centered, so the 3D print does not fit well.
+![NeoPixel back](imgs/pcb8x8back.jpg)
 
-![NeoPixel 8x8](imgs/pcb8x8back.jpg)
-
-So, I made a new [3D model](https://a360.co/2RQO6uB).
+Unfortunately, the resistors are not centered.
+Also the matrix is not equal in horizontal and vertical direction: 
+in horizontal direction the spacing is ~8.1mm and in vertical direction the spacing is ~8.3mm.
+Result: he 3D print does not fit well.
+I needed to made a new [3D model](https://a360.co/2RQO6uB).
 
 See below for the wiring; the resistor is 470 Ω, the capacitor 1000 µF 
 (see [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)).
