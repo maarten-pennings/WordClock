@@ -1,5 +1,5 @@
-// WordClockFull.ino - A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration
-#define VERSION "3"
+// WordClockFull.ino - A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration, color
+#define VERSION "4"
 
 #include <time.h>
 #include <ESP8266WiFi.h>
@@ -28,16 +28,16 @@ NvmField cfg_fields[] = {
   {"Round"           , "150"                        ,  4, "The number of seconds to add to the actual time (typically 150, to round 2.5 min up to 5 min intervals). " },
   
   {"Color palette"   , ""                           ,  0, "The colors for the letter categories. Use RRGGBB, hex digits for red, green and blue. E.g. FFFF00 is bright yellow, 000011 dim blue. " },
-  {"Color.1"         , "110000"                     ,  6, "The first color; by default used for hour category (een-twaalf)." },
-  {"Color.2"         , "001100"                     ,  6, "The second color; by default used for minute 1 category (vijf, tien, kwart)." },
+  {"Color.1"         , "120000"                     ,  6, "The first color; by default used for hour category (een-twaalf)." },
+  {"Color.2"         , "001200"                     ,  6, "The second color; by default used for minute 1 category (vijf, tien, kwart)." },
   {"Color.3"         , "0C0C00"                     ,  6, "The third color; by default used for minute 2 category (half). If colors 2 and 3 are equal, 'half' belongs to 'minutes'." },
-  {"Color.4"         , "000011"                     ,  6, "The fourth color; by default used for prepositions category (voor, over)." },
+  {"Color.4"         , "000018"                     ,  6, "The fourth color; by default used for prepositions category (voor, over)." },
   {"Color.5"         , "222222"                     ,  6, "The fifth color; for some animations. " },
   
   {"Display"         , ""                           ,  0, "Which colors are used when. " },
   {"Refresh"         , "one"                        ,  8, "When is the display refreshed: <b>one</b> (every minute - useless for <b>fix</b>/<b>none</b>), <b>five</b> (every 5 minutes)." },
-  {"Mapping"         , "cycle"                      ,  8, "Mapping: <b>fix</b> (fixed to default), <b>cycle</b> (colors cycle over categories), <b>random</b> (random between color 1 and 2; 3 and 4 not used)." },  
-  {"Animation"       , "wipe"                       ,  8, "The animation: <b>none</b>, <b>wipe</b> (horizontal wipe, using Color.4), <b>dots</b> (letter by letter off then on). " },  
+  {"Mapping"         , "cycle"                      ,  8, "Mapping: <b>fix</b> (fixed to default), <b>cycle</b> (colors cycle over categories), <b>random</b> (random, max from colors 1-4)." },  
+  {"Animation"       , "wipe"                       ,  8, "The animation: <b>none</b>, <b>wipe</b> (wipe, using Color.5), <b>dots</b> (letter by letter off then on), <b>pulse</b> (dim down then up). " },  
   {0                 , 0                            ,  0, 0},  
 };
 
@@ -49,15 +49,21 @@ Cfg cfg("WordClock", cfg_fields, CFG_SERIALLVL_USR, LED_BUILTIN);
 // COL (Color) ================================================================================
 // Color management (palettes)
 
-typedef struct {
+typedef struct { // Colors for the words
   uint32_t h;  // Color for hours
   uint32_t m1; // Color for minutes (vijf, tien, kwart)
   uint32_t m2; // Color for minutes (half)
   uint32_t p;  // Color for prepositions (voor, over)
 } palette4_t;
 
-typedef struct {
-  uint32_t c1;
+typedef struct { // Color component maxima for random
+  uint32_t r; // The maximum r (red) value in palette5
+  uint32_t g; // The maximum g (green) value in palette5
+  uint32_t b; // The maximum b (blue) value in palette5
+} palette3_t;
+
+typedef struct { // Colors from config
+  uint32_t c1; 
   uint32_t c2;
   uint32_t c3;
   uint32_t c4;
@@ -68,19 +74,21 @@ typedef struct {
 // Values retrieved from Cfg
 
 palette5_t col_palette; 
+palette3_t col_maxima;  // Maxima from col_palette - see col_init()
 
-#define COL_REFRESH_ONE    1 // cfg string: one
-#define COL_REFRESH_FIVE   5 // cfg string: five
+#define COL_REFRESH_ONE     1 // cfg string: one
+#define COL_REFRESH_FIVE    5 // cfg string: five
 int col_refresh;   
 
-#define COL_MAPPING_FIX    1 // cfg string: fix
-#define COL_MAPPING_CYCLE  2 // cfg string: cycle
-#define COL_MAPPING_RANDOM 3 // cfg string: random
+#define COL_MAPPING_FIX     1 // cfg string: fix
+#define COL_MAPPING_CYCLE   2 // cfg string: cycle
+#define COL_MAPPING_RANDOM  3 // cfg string: random
 int col_mapping;   
 
-#define COL_ANIMATION_NONE 1 // cfg string: none
-#define COL_ANIMATION_WIPE 2 // cfg string: wipe
-#define COL_ANIMATION_DOTS 3 // cfg string: dots
+#define COL_ANIMATION_NONE  1 // cfg string: none
+#define COL_ANIMATION_WIPE  2 // cfg string: wipe
+#define COL_ANIMATION_DOTS  3 // cfg string: dots
+#define COL_ANIMATION_PULSE 4 // cfg string: pulse
 int col_animation; 
 
 // The parse and unparse routines
@@ -138,9 +146,10 @@ int col_mapping_parse() {
 }
 
 const char * col_animation_unparse(int val) {
-  if(      val==COL_ANIMATION_NONE ) return "none";
-  else if( val==COL_ANIMATION_WIPE ) return "wipe";
-  else if( val==COL_ANIMATION_DOTS ) return "dots";
+  if(      val==COL_ANIMATION_NONE  ) return "none";
+  else if( val==COL_ANIMATION_WIPE  ) return "wipe";
+  else if( val==COL_ANIMATION_DOTS  ) return "dots";
+  else if( val==COL_ANIMATION_PULSE ) return "pulse";
   else return "?animation?";
 }
 
@@ -150,10 +159,16 @@ int col_animation_parse() {
   if( strcmp(val,"none"    )==0 ) return COL_ANIMATION_NONE;
   if( strcmp(val,"wipe"    )==0 ) return COL_ANIMATION_WIPE;
   if( strcmp(val,"dots"    )==0 ) return COL_ANIMATION_DOTS;
+  if( strcmp(val,"pulse"   )==0 ) return COL_ANIMATION_PULSE;
   int dft= COL_ANIMATION_WIPE;
   Serial.printf("ltrs: ERROR in %s (%s->%s)\n",cfgid,val,col_animation_unparse(dft));
   return dft;
 }
+
+#define R(u)       (((u)>>16)&0xFF)
+#define G(u)       (((u)>> 8)&0xFF)
+#define B(u)       (((u)>> 0)&0xFF)
+#define RGB(r,g,b) ((r)<<16) | ((g)<<8) | ((b)<<0)
 
 void col_init() {
   col_palette.c1= col_parse( "Color.1" );
@@ -163,6 +178,11 @@ void col_init() {
   col_palette.c5= col_parse( "Color.5" );
   Serial.printf("col : palette: %06X %06X %06X %06X %06X\n", col_palette.c1, col_palette.c2, col_palette.c3, col_palette.c4, col_palette.c5 );
 
+  col_maxima.r= max( max( R(col_palette.c1) , R(col_palette.c2) )  ,  max( R(col_palette.c3) , R(col_palette.c4) ) );
+  col_maxima.g= max( max( G(col_palette.c1) , G(col_palette.c2) )  ,  max( G(col_palette.c3) , G(col_palette.c4) ) );
+  col_maxima.b= max( max( B(col_palette.c1) , B(col_palette.c2) )  ,  max( B(col_palette.c3) , B(col_palette.c4) ) );
+  Serial.printf("col : max: R%02X G%02X B%02X\n", col_maxima.r, col_maxima.g, col_maxima.b );
+
   col_refresh= col_refresh_parse();
   col_mapping= col_mapping_parse();
   col_animation= col_animation_parse();
@@ -171,48 +191,27 @@ void col_init() {
 
 // Generating the right color
 
-void col_random_check() {
-  randomSeed( micros() );
-  uint32_t r_hi= (col_palette.c1>>16) & 0xFF;
-  uint32_t r_lo= (col_palette.c2>>16) & 0xFF;
-  uint32_t g_hi= (col_palette.c1>> 8) & 0xFF;
-  uint32_t g_lo= (col_palette.c2>> 8) & 0xFF;
-  uint32_t b_hi= (col_palette.c1>> 0) & 0xFF;
-  uint32_t b_lo= (col_palette.c2>> 0) & 0xFF;
-  if( r_lo>=r_hi ) Serial.printf("ltrs: ERROR red lo>=hi (%02x,%02x)\n", r_lo,r_hi );
-  if( g_lo>=g_hi ) Serial.printf("ltrs: ERROR green lo>=hi (%02x,%02x)\n", g_lo,g_hi );
-  if( b_lo>=b_hi ) Serial.printf("ltrs: ERROR blue lo>=hi (%02x,%02x)\n", b_lo,b_hi );
-}
-
 uint32_t col_random() {
-  // Use color 1 and 2 to get the max and min values from
-  uint32_t r_hi= (col_palette.c1>>16) & 0xFF;
-  uint32_t r_lo= (col_palette.c2>>16) & 0xFF;
-  uint32_t g_hi= (col_palette.c1>> 8) & 0xFF;
-  uint32_t g_lo= (col_palette.c2>> 8) & 0xFF;
-  uint32_t b_hi= (col_palette.c1>> 0) & 0xFF;
-  uint32_t b_lo= (col_palette.c2>> 0) & 0xFF;
-  // If we do truly random, colors get a bit washed out and equal. Introduce bias to lo and hi.
-  uint32_t r;
-  switch( random(3) ) {
-    case 0  : r= r_lo; break;
-    default : r= random(r_lo, r_hi); break;
-    case 2  : r= r_hi; break;
+  // If we do truly random, colors get a bit washed out and equal, or even black. Introduce bias to hi.
+  // We generate a 3 bit vector telling which of the (r,g,b) components are included
+  int included= random(1,8); // Range [1..7], in binary (000,111], so black is not generated.
+  uint32_t r= 0; // off
+  if( included & 1 ) {
+    r= col_maxima.r; // max
+    if( random(4)==3 ) r= random(r/5)*5+5; // In steps of 5, minimum 5
   }
-  uint32_t g;
-  switch( random(3) ) {
-    case 0  : g= g_lo; break;
-    default : g= random(g_lo, g_hi); break;
-    case 2  : g= g_hi; break;
+  uint32_t g= 0; // off
+  if( included & 2 ) {
+    g= col_maxima.g; // max
+    if( random(4)==3 ) g= random(g/5)*5+5; // In steps of 5, minimum 5
   }
-  uint32_t b;
-  switch( random(3) ) {
-    case 0  : b= b_lo; break;
-    default : b= random(b_lo, b_hi); break;
-    case 2  : b= b_hi; break;
+  uint32_t b= 0; // off
+  if( included & 4 ) {
+    b= col_maxima.b; // max
+    if( random(4)==3 ) b= random(b/5)*5+5; // In steps of 5, minimum 5
   }
   // Compose
-  uint32_t col= (r<<16) + (g<<8) + (b<<0);
+  uint32_t col= RGB(r,g,b);
   return col;
 }
 
@@ -223,14 +222,10 @@ palette4_t * col_next() {
   switch( col_mapping ) {
     
     case COL_MAPPING_FIX    :
-      if( first ) {
         palette.h = col_palette.c1;
         palette.m1= col_palette.c2;
         palette.m2= col_palette.c3;
         palette.p = col_palette.c4;
-      } else {
-        // No changes needed
-      }
       break;
       
     case COL_MAPPING_CYCLE  :
@@ -260,14 +255,11 @@ palette4_t * col_next() {
       break;
       
     case COL_MAPPING_RANDOM :
-      if( first ) {
-        // Check min,max makes sense
-        col_random_check();
-      }
+      // Generate distinct colors
       palette.h = col_random();
-      palette.m1= col_random();
-      palette.m2= col_random();
-      palette.p = col_random();
+      do { palette.m1= col_random(); } while( palette.h==palette.m1 );
+      do { palette.m2= col_random(); } while( palette.h==palette.m2 || palette.m1==palette.m2 );
+      do { palette.p = col_random(); } while( palette.h==palette.p  || palette.m1==palette.p  || palette.m2==palette.p );
       // special case: c2==c3 -> 'half' belongs to minute category
       if( col_palette.c2==col_palette.c3 ) palette.m2= palette.m1; 
       break;
@@ -379,6 +371,32 @@ bool wifi_check() {
 // Clk (clock/time) ========================================================================
 // Maintains local time, using NTP servers plus timezone settings
 
+#define  CLK_DEMO_MS   5000 // In demo mode, every CLK_DEMO_MS advance 1 minute
+int      clk_demo_mode;
+int      clk_demo_hour;
+int      clk_demo_min;
+uint32_t clk_demo_ms;
+
+// This function is the equivalent of clk_get(): it generates time in demo mode (much faster)
+bool clk_demo(int*hour, int*min, int*sec, char*buf ) {
+  uint32_t now= millis();
+  if( now-clk_demo_ms>CLK_DEMO_MS ) {
+    clk_demo_min++;
+    if( clk_demo_min==60 ) {
+      clk_demo_min=0;
+      clk_demo_hour++;
+      if( clk_demo_hour==24 ) clk_demo_hour=0;
+    }
+    clk_demo_ms= now;
+  }
+  if( buf ) sprintf(buf,"(demo) %02d:%02d:%02d", clk_demo_hour, clk_demo_min, 0 );
+  if( hour ) *hour= clk_demo_hour;
+  if( min  ) *min = clk_demo_min;
+  if( sec  ) *sec = 0;
+
+  return true;
+}
+
 int clk_round;
 
 void clk_init() {
@@ -390,6 +408,9 @@ void clk_init() {
   Serial.printf("clk : init: %s %s %s\n", cfg.getval("NTP.server.1"), cfg.getval("NTP.server.2"), cfg.getval("NTP.server.3"));
   Serial.printf("clk : timezones: %s\n", cfg.getval("Timezone") );
 
+  // Disable demo
+  clk_demo_mode= 0;
+  
   // Setup round
   clk_round= String(cfg.getval("Round")).toInt();
   Serial.printf("clk : round: %d sec\n", clk_round );
@@ -399,6 +420,9 @@ void clk_init() {
 // Return value indicates if time is already available.
 // The `buf` out parameter (caller allocated >32) has unrounded complete time
 bool clk_get(int*hour, int*min, int*sec, char*buf ) {
+  // If in demo mode, return demo ("fast") time
+  if( clk_demo_mode ) return clk_demo(hour,min,sec,buf);
+  
   // Get the current time
   time_t tnow= time(NULL); // Returns seconds - note `time_t` is just a `long`.
   
@@ -422,6 +446,25 @@ bool clk_get(int*hour, int*min, int*sec, char*buf ) {
   return avail;
 }
 
+// Get the status of the demo mode
+int clk_demo_get() {
+  return clk_demo_mode;
+}
+
+// Set the status of the demo mode
+void clk_demo_set(int demo) {
+  if( demo ) {
+    clk_demo_mode= 0; // So the clk_get() works
+    clk_get(&clk_demo_hour, &clk_demo_min, NULL, NULL);
+    clk_demo_ms= millis();
+    clk_demo_ms+= CLK_DEMO_MS; // trigger an update immediately
+    Serial.printf("clk : demo: on %02d:%02d\n",clk_demo_hour, clk_demo_min);
+  } else {
+    Serial.printf("clk : demo: off\n");
+  }
+  clk_demo_mode= demo;
+}
+
 
 // NEO (NeoPixel string) =========================================================================
 // Driver for the NeoPixel board
@@ -430,8 +473,7 @@ bool clk_get(int*hour, int*min, int*sec, char*buf ) {
 #define NEO_NUMPIXELS      64
 
 // When we setup the NeoPixel library, we tell it how many pixels, which NEO_DIN_PIN to use to send signals, and some pixel type settings.
-Adafruit_NeoPixel neo1 = Adafruit_NeoPixel(NEO_NUMPIXELS, NEO_DIN_PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel neo2 = Adafruit_NeoPixel(NEO_NUMPIXELS, 0, NEO_GRB + NEO_KHZ800); // secondary buffer for animations
+Adafruit_NeoPixel neopixel = Adafruit_NeoPixel(NEO_NUMPIXELS, NEO_DIN_PIN, NEO_GRB + NEO_KHZ800);
 
 void neo_test(Adafruit_NeoPixel*neo) {
   for( int color=0x110000; color>0; color>>=8 ) {
@@ -439,29 +481,27 @@ void neo_test(Adafruit_NeoPixel*neo) {
     for( int lix=NEO_NUMPIXELS-1; lix>=0; lix-- ) {
       neo->setPixelColor(lix,color);
       neo->show();  
-      delay(15);
+      delay(10);
     }
-    delay(150);
+    delay(100);
   }
 }
 
 // A routine for quick off during startup
 void neo_off() {
-  neo1.begin();
-  neo1.clear();
-  neo1.show();
+  neopixel.begin();
+  neopixel.clear();
+  neopixel.show();
 }
 
 // Begin with blank display
 void neo_init() {
-  neo1.begin();
+  neopixel.begin();
   Serial.printf("neo : init\n");
-  neo_test(&neo1);
-  neo1.clear();
-  neo1.show();
+  neo_test(&neopixel);
+  neopixel.clear();
+  neopixel.show();
   Serial.printf("neo : tested\n");
-  // setup secondary
-  neo2.begin();
 }
 
 
@@ -586,6 +626,38 @@ void ltrs_init() {
 
 // ANIM (animators) ===========================================================
 
+
+// None
+
+class AnimNone {
+  public:
+    AnimNone();
+    void start(palette4_t * p, int h, int m);
+    void step();
+    int _run;
+};
+
+AnimNone::AnimNone() {
+  _run= 0;
+}
+
+void AnimNone::start(palette4_t * p, int h, int m) {
+  Serial.printf("(none) ");
+  neopixel.clear();
+  ltrs_add_time(&neopixel,p,h%12,m); // Remember to print PM hours to 0..11
+  neopixel.show();
+  _run= 1;
+};
+
+void AnimNone::step() {
+  if( _run ) {
+    Serial.printf("anim: none - stop\n");
+    _run= 0;
+  }
+}
+
+AnimNone animn;
+
 // Wipe
 
 class AnimWipe {
@@ -594,18 +666,22 @@ class AnimWipe {
     void start(palette4_t * p, int h, int m);
     void step();
   private:
+    Adafruit_NeoPixel * _neobuf;
     int _step;
     uint32_t _ms;
 };
 
 AnimWipe::AnimWipe() {
+  _neobuf = new Adafruit_NeoPixel(NEO_NUMPIXELS, -1, NEO_GRB + NEO_KHZ800);
+  _neobuf->begin();
   _step=9;
 }
 
 void AnimWipe::start(palette4_t * p, int h, int m) {
+  Serial.printf("(wipe) ");
   // Prepare the new image
-  neo2.clear();
-  ltrs_add_time(&neo2,p,h%12,m); // Remember to print PM hours to 0..11
+  _neobuf->clear();
+  ltrs_add_time(_neobuf,p,h%12,m); // Remember to print PM hours to 0..11
   // Init animation state
   _step=0; 
   _ms=millis(); 
@@ -613,18 +689,22 @@ void AnimWipe::start(palette4_t * p, int h, int m) {
 
 void AnimWipe::step() {
   uint32_t ms= millis();
-  if( _step<9 && ms-_ms>50 ) {
-    for( int lix=8*(8-_step)-1; lix>=8*(8-_step)-8; lix--) {
-      if( lix+8<NEO_NUMPIXELS ) neo1.setPixelColor(lix+8,neo2.getPixelColor(lix+8));
-      if( lix+8<NEO_NUMPIXELS ) neo1.setPixelColor(lix,col_palette.c5);
+  if( ms-_ms<200 ) return;
+  _ms= ms; 
+
+  if( _step<9  ) {
+    for( int lix=7-_step; lix<NEO_NUMPIXELS; lix+=8) {
+      if( _step>0 ) neopixel.setPixelColor(lix+1,_neobuf->getPixelColor(lix+1));
+      if( _step<8 ) neopixel.setPixelColor(lix,col_palette.c5);
     }
-    neo1.show();
+    neopixel.show();
     _step++;
-    _ms= ms;
+
+    if( _step==9 ) Serial.printf("anim: wipe - stop\n");
   }
 }
 
-AnimWipe animx;
+AnimWipe animw;
 
 // Dots
 
@@ -634,66 +714,144 @@ class AnimDots {
     void start(palette4_t * p, int h, int m);
     void step();
   private:
-    int _phase; // 1=del-dots, 2=add-dots
-    int _left;  // dots left to del or add
+    Adafruit_NeoPixel * _neobuf;
+    int _phase; // 0=idle, 1=del-dots, 2=add-dots
     uint32_t _ms;
 };
 
 AnimDots::AnimDots() {
-  _phase=2;
-  _left=0;
+  _neobuf = new Adafruit_NeoPixel(NEO_NUMPIXELS, -1, NEO_GRB + NEO_KHZ800);
+  _neobuf->begin();
+  _phase=0;
 }
 
 void AnimDots::start(palette4_t * p, int h, int m) {
+  Serial.printf("(dots) ");
   // Prepare the new image
-  neo2.clear();
-  ltrs_add_time(&neo2,p,h%12,m); // Remember to print PM hours to 0..11
+  _neobuf->clear();
+  ltrs_add_time(_neobuf,p,h%12,m); // Remember to print PM hours to 0..11
   // Init animation state
   _phase=1; // start by deleting current pixels
-  _left=0; for(int lix=0; lix<NEO_NUMPIXELS; lix++ ) _left+= neo1.getPixelColor(lix)!=0;
   _ms=millis(); 
 };
 
 void AnimDots::step() {
-  // Phase done?
-  if( _left==0 ) {
-    if( _phase==1 ) {
-      // Switch to adding pixels
-      _left=0; for(int lix=0; lix<NEO_NUMPIXELS; lix++ ) _left+= neo2.getPixelColor(lix)!=0;  
-      _phase= 2;
-    } else {
-      // End of phase 2, so do nothing
-      return;
-    }
-  }
+  // Animation idle?
+  if( _phase==0 ) return;
+  
   // Timing
-  //Serial.printf("animdots: %d %d\n",_phase,_left);
   uint32_t ms= millis();
-  if( ms-_ms<100 ) return;
-  // Execute a step  
+  if( ms-_ms<75 ) return;
+  _ms= ms; 
+  
+  // Execute a step: delete one pixel in phase 1
   if( _phase==1 ) {
     // deleting
     int lix0= random(NEO_NUMPIXELS);
     int lix= lix0;
     do {
-      if( neo1.getPixelColor(lix)!=0 ) { neo1.setPixelColor(lix,0); break; }
-      lix= (lix+1) % NEO_NUMPIXELS;
+      if( neopixel.getPixelColor(lix)!=0 ) { neopixel.setPixelColor(lix,0); neopixel.show(); return; }
+      lix= (lix+7) % NEO_NUMPIXELS; // We jump in steps of 7 -- note gcd(64,7)==1 -- to mittigate that words are eaten from one side
     } while( lix!=lix0 );
-  } else {
+    // No pixel found to delete. So screen is empty. Go to next phase
+    _phase=2;
+    return;
+  } 
+  
+  // Execute a step: add one pixel in phase 2
+  if( _phase==2 ) {
     // adding
     int lix0= random(NEO_NUMPIXELS);
     int lix= lix0;
     do {
-      if( neo2.getPixelColor(lix)!=0 ) { neo1.setPixelColor(lix,neo2.getPixelColor(lix)); neo2.setPixelColor(lix,0); break; }
-      lix= (lix+1) % NEO_NUMPIXELS;
+      if( _neobuf->getPixelColor(lix)!=0 ) { neopixel.setPixelColor(lix,_neobuf->getPixelColor(lix)); _neobuf->setPixelColor(lix,0); neopixel.show(); return; }
+      lix= (lix+7) % NEO_NUMPIXELS; // We jump in steps of 7 -- note gcd(64,7)==1 -- to mittigate that words are extended from one side
     } while( lix!=lix0 );
+    // No pixel found to delete. So screen is empty. Go to next phase
+    _phase=0;
+    Serial.printf("anim: dots - stop\n");
+    return;
   }
-  neo1.show();
-  _left--;
-  _ms= ms;
 }
 
 AnimDots anim;
+
+// Pulse
+
+#define ANIMPULSE_MAXSTEP 25
+
+class AnimPulse {
+  public:
+    AnimPulse();
+    void start(palette4_t * p, int h, int m);
+    void step();
+  private:
+    Adafruit_NeoPixel * _neobuf1;
+    Adafruit_NeoPixel * _neobuf2;
+    int _step; // [0..ANIMPULSE_MAXSTEP) is pulse-down,  [ANIMPULSE_MAXSTEP..2*ANIMPULSE_MAXSTEP) is pulse up
+    uint32_t _ms;
+};
+
+AnimPulse::AnimPulse() {
+  _neobuf1 = new Adafruit_NeoPixel(NEO_NUMPIXELS, -1, NEO_GRB + NEO_KHZ800);
+  _neobuf1->begin();
+  _neobuf2 = new Adafruit_NeoPixel(NEO_NUMPIXELS, -1, NEO_GRB + NEO_KHZ800);
+  _neobuf2->begin();
+  _step= 2*ANIMPULSE_MAXSTEP;
+}
+
+void AnimPulse::start(palette4_t * p, int h, int m) {
+  Serial.printf("(pulse) ");
+  // Save the old image
+  _neobuf1->clear();
+  for(int lix=0; lix<NEO_NUMPIXELS; lix++) _neobuf1->setPixelColor(lix,neopixel.getPixelColor(lix));
+  // Prepare the new image
+  _neobuf2->clear();
+  ltrs_add_time(_neobuf2,p,h%12,m); // Remember to print PM hours to 0..11
+  // Init animation state
+  _step=0;
+  _ms=millis(); 
+};
+
+void AnimPulse::step() {
+  // Timing
+  uint32_t ms= millis();
+  if( ms-_ms<50 ) return;
+  _ms=ms;
+  
+  // Execute a step: pulse downn all pixels a small bit 
+  if( _step<ANIMPULSE_MAXSTEP ) {
+    // pulse down
+    for(int lix=0; lix<NEO_NUMPIXELS; lix++) {
+      int f= ANIMPULSE_MAXSTEP-1-_step;
+      uint32_t col= _neobuf1->getPixelColor(lix);
+      uint32_t r= R(col)*f/ANIMPULSE_MAXSTEP;
+      uint32_t g= G(col)*f/ANIMPULSE_MAXSTEP;
+      uint32_t b= B(col)*f/ANIMPULSE_MAXSTEP;
+      neopixel.setPixelColor(lix,RGB(r,g,b)); 
+    }
+    neopixel.show();
+    _step++;
+  } else if( _step<2*ANIMPULSE_MAXSTEP ) {
+    // pulse up
+    for(int lix=0; lix<NEO_NUMPIXELS; lix++) {
+      int f= 1 + _step - ANIMPULSE_MAXSTEP;
+      uint32_t col= _neobuf2->getPixelColor(lix);
+      uint32_t r= R(col)*f/ANIMPULSE_MAXSTEP;
+      uint32_t g= G(col)*f/ANIMPULSE_MAXSTEP;
+      uint32_t b= B(col)*f/ANIMPULSE_MAXSTEP;
+      neopixel.setPixelColor(lix,RGB(r,g,b)); 
+    }
+    neopixel.show();
+    _step++;
+    if( _step==2*ANIMPULSE_MAXSTEP ) Serial.printf("anim: pulse - stop\n");
+  } else {
+    // nothing to do
+  }
+  
+}
+
+AnimPulse animp;
 
 
 // MAIN ========================================================================
@@ -706,7 +864,7 @@ void setup() {
 
   // On boot: check if config button is pressed
   delay(1000); // We need a bit of delay (due to the enormous capacitor?) to detect the button
-  cfg.check(100,CFG_BUT_PIN); // Wait 100 flashes (of 50ms) for a change on pin CFG_BUT_PIN
+  cfg.check(60,CFG_BUT_PIN); // Wait 60 flashes (of 50ms) for a change on pin CFG_BUT_PIN
   // if in config mode, do config setup (when config completes, it restarts the device)
   if( cfg.cfgmode() ) { cfg.setup(); return; }
   Serial.printf("main: No configuration requested, started WordClock\n\n");
@@ -733,16 +891,17 @@ void loop() {
   wifi_check();
   but_scan();
 
+  // If button pressed, toggle demo mode
+  if( but_wentdown() ) clk_demo_set( !clk_demo_get() );
+  
   // Get the current time
   int curhour,curmin,cursec, avail= clk_get(&curhour,&curmin,&cursec,buf);
-  if( curhour!=prevhour || curmin!=prevmin || cursec!=prevsec || but_wentdown() ) {
+  if( curhour!=prevhour || curmin!=prevmin || cursec!=prevsec ) {
     // Time has changed, print to serial
-    Serial.printf("clk: %s ", buf); 
+    Serial.printf("clk : %s ", buf); 
     if( avail ) {
       Serial.printf("%02d:%02d ", curhour, curmin); 
-      int refresh= but_wentdown();
-      if( refresh ) Serial.printf("force "); 
-      refresh|= curhour!=prevhour;
+      int refresh= curhour!=prevhour;
       if( col_refresh==COL_REFRESH_ONE  ) refresh|= curmin!=prevmin;
       if( col_refresh==COL_REFRESH_FIVE ) refresh|= (curmin%5==0) && (curmin!=prevmin);
       if( refresh ) {
