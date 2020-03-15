@@ -35,5 +35,5 @@ All sketches are intended for an ESP8266.
    A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration (via web).
    Supports color changes and display animations. Has a demo mode.
    This is the one that you might be looking for if you want a full featured clock.
-   See the [mian page](../README.md#13-Model-6) for a list of features.
+   See the [main page](../README.md#13-Model-6) for a list of features.
     
