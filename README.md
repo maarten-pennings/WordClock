@@ -781,12 +781,12 @@ itself can be stored anywhere, but most people store it in the Arduino directory
 
 When the WordClock is powered it should start with a blank display.
 Sometimes it powers with the display showing the last time; this is due to the large internal capacitor
-which helps the NeoPixel display to retain state.
+which helps the NeoPixel display to retain state. But it will be switches off immediately.
 
 After power up, the WordClock first gives the user the options to enter configuration mode.
 Entering configuration mode is achieved by pressing the button at the back while the signaling LED at the back is blinking.
 If the button is not pressed during the blinking (which takes about one second), the WordClock app starts.
-We will describe that first.
+We will describe that first. Configuration mode is described [below](#configuration).
 
 The WordClock app starts with the signaling LED on. This indicates the WordClock has no WiFi connection (yet).
 The first step of the WordClock app is a NeoPixel test: all red LEDs are turned on one-by-one, then all green LEDs and finally
@@ -798,18 +798,35 @@ Next step is to sync with NTP services. If that is successful, WordClock knows t
 
 If later, the WiFi connection is lost, the signaling LED switches on again (until the next WiFi connect).
 When there is no WiFi, there is no NTP sync. But once time has been synced, the internal processor
-keeps track of time itself (with a drift of ±1s per day)
+keeps track of time itself (with a drift of ±1s per day). NTP syncs occur once per hour (if WiFi is connected).
 
 There is one feature while running: the button at the back toggles demo mode.
 In demo mode, time runs at 15× speed. This shows off the animations.
 Demo mode starts with current time, but quickly deviates because it runs faster.
 When the button is pressed again, demo mode is off, and the clock shows the real time again.
 
-When the WordClock is correctly configured, it will also switch to daylight saving time and back to standard time
-at the correct moment.
+When the WordClock is correctly configured, it will also switch to daylight saving time 
+and back to standard time at the correct moment.
+
+Note that the WordClock app logs all steps over the UART connection, which is available over USB.
 
 
 ### Configuration
+
+When the user presses the back button at power up (with the signaling LED blinking fast) the WordClock enter configuration mode.
+WordClock starts and WiFi Access Point, a DNS server, DHCP server and a web server.
+Once the web server is running, the signaling LED will blink slowly (1Hz) showing configuration mode is active.
+
+Connect your laptop or smart phone to this Access point.
+
+![WiFi](imgs/wifi.png)
+
+Start a browser (on your laptop of smart phone) and visit site 10.10.10.10.
+You will get the configuration page.
+
+![Configuration](imgs/cfg.png)
+
+
 
 
 (end)
