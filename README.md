@@ -7,11 +7,12 @@ Commercial [products](https://qlocktwo.com/) exist, but I'm making my own.
 There is a [video](https://youtu.be/0UkmPO7tGsg) looking at the mechanics,
 and a [video](https://youtu.be/4AUioVwlsqg) comparing it to a DCF77 clock.
 
-Here are some demos of animations ["none"](https://youtu.be/OCgUQ6qWnN4),
-["wipe"](https://youtu.be/U9yd8xaslh4),
-["dots"](https://youtu.be/AXKME2LGA_A),
-["pulse"](https://youtu.be/F0VIralrmUM), and
-["mist"](https://youtu.be/u285F07go_c).
+Here are some demos of animations 
+["none"](https://youtu.be/OCgUQ6qWnN4),
+[wipe](https://youtu.be/U9yd8xaslh4),
+[dots](https://youtu.be/AXKME2LGA_A),
+[pulse](https://youtu.be/F0VIralrmUM), and
+[mist](https://youtu.be/u285F07go_c).
 
 
 ## Table of contents
@@ -751,8 +752,8 @@ clk : 2020-03-15 20:31:14 (dst=0) 20:33
 clk : 2020-03-15 20:31:15 (dst=0) 20:33                                         
 anim: mist - stop (2360 ms)                                                     
 clk : 2020-03-15 20:31:16 (dst=0) 20:33                                         
-clk : 2020-03-15 20:31:17 (dst=0) 20:33                                         
 clk : 2020-03-15 20:31:18 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:17 (dst=0) 20:33                                         
 clk : 2020-03-15 20:31:19 (dst=0) 20:33                                         
 clk : 2020-03-15 20:31:20 (dst=0) 20:33                                         
 clk : 2020-03-15 20:31:21 (dst=0) 20:33                                         
@@ -840,13 +841,13 @@ The down error reverts to the default of the field.
 Once you have entered all configuration settings to you liking, press `Save`.
 The settings will be saved persistently, and the WordClock restart.
 
-The first section is **Access Points**. 
+The first section is **Access Points**.  
 Here you can enter up to three access points; the SSID (`Ssid.1`, `Ssid.2`, and `Ssid.3`) and 
 the associated passwords  (`Password.1`, `Password.2`, and `Password.3`) .
 I typically enter home, work, and the tethering AP of my phone.
 If you have fewer than three, just leave them blank.
  
-The next section is **Time management**. 
+The next section is **Time management**.  
 Here you type the host name of three NTP servers (`NTP.server.1`, `NTP.server.2`, and `NTP.server.3`). 
 Probably the default servers are ok.
 The `Timezone` field defines standard timezone you want (with respect to UTC).
@@ -854,32 +855,32 @@ It also defines the daylight saving timezone (DST) and when it starts and stops.
 The syntax of this field is described [here](https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html).
 The `Round` field ads seconds to time to do the rounding up. See details [above](#12-model-5).
 
-The third section is **Color palette**. 
-All fields should have 6 hexadecimal digits (0..9, A..F), with two digits for red, tow for green and two for blue.
-The first color (`Color.h`) is used for the hours text.
+The third section is **Color palette**.  
+All fields should have 6 hexadecimal digits (0..9, A..F), with two digits for red, two for green and two for blue.
+The first color (`Color.h`) is used for the hour word.
 The second color (`Color.m1`) is used for the minutes ("vijf", "tien", "kwart").
 The third color (`Color.m2`) is used for the word "half".
 The fourth color (`Color.p`) is used for the prepositions ("voor" and "over").
 If `Color.m1` and `Color.m2` are equal, "half" will always be colored the same as "vijf", "tien" and "kwart" (in "cycle" and "random" mapping).
 If mapping is "random", the RGB components of the generated random colors will always be 
 below the ones of (`Color.h`, `Color.m1`, `Color.m2`, `Color.p`).
-The last color (`Color.a`) is used for animations that need an extra color (wipe and mist).
+The last color (`Color.a`) is used for animations that need an extra color ("wipe" and "mist").
 
-The last section is **Display**. 
+The last section is **Display**.  
 This section determines the animations.
 `Refresh` is either "one" or "five". It determines how often the display is refreshed:
 either every minute ("one") or every five minutes ("five").
-Note that only ever five minutes the time reading changes.
+Note that only every five minutes the time reading actually changes (since the clock display resolution is 5 minutes).
 So selecting "one" makes no sense when mapping is "fix" and animation is "none".
-`Mapping` determines colors used for the words. "fix" uses the colors as defined in the color palette section.
+`Mapping` determines the colors used for the words. "fix" uses the colors as defined in the color palette section.
 The "cycle" mapping also uses the colors, but every refresh the colors are cycled.
 Finally, the "random" mapping generates random colors for the words (never duplicates, never black).
 The `Animation` setting determines the animation for every refresh.
 The ["none"](https://youtu.be/OCgUQ6qWnN4) animation instantly removes the old time and adds the new time.
-The ["wipe"](https://youtu.be/U9yd8xaslh4) animation moves a columnc from left to right erasing the old time before it and adding the new time behind it.
+The ["wipe"](https://youtu.be/U9yd8xaslh4) animation moves a column (in `Color.a`) from left to right erasing the old time before it and adding the new time behind it.
 The ["dots"](https://youtu.be/AXKME2LGA_A) removes the old time one pixel at a time, then adds the new time one at a time.
 The ["pulse"](https://youtu.be/F0VIralrmUM) animation dims the old time down, then dims the new time up.
-Finally, the ["mist"](https://youtu.be/u285F07go_c) animation covers the old time be adding mist pixels, then uncovers the new time by removing mist pixels.
+Finally, the ["mist"](https://youtu.be/u285F07go_c) animation covers the old time be adding mist pixels (`Color.a`), then uncovers the new time by removing mist pixels.
 
 
 (end)
