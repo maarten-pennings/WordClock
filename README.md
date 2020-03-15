@@ -23,6 +23,8 @@ and a [video](https://youtu.be/4AUioVwlsqg) comparing it to a DCF77 clock.
  - [10. Modding the board](#10-Modding-the-board) - Selecting an ESP8266 board
  - [11. Model 4](#11-Model-4) - Assembling the electronics and 3D printed case
  - [12. Model 5](#12-Model-5) - Adding the time keeping software
+ - [13. Model 6](#13-Model-6) - End-user application "WordClockFull"
+ - [14. User manual](#14-User-manual) - The user manual of "WordClockFull"
 
 Notes
  - There are several [Arduino sketches](sketches) used during development.
@@ -627,6 +629,44 @@ Notes on the output
  - At 23:26:30 there is another minutes change (to `23:29`) and the display is refreshed to `vijf-voor-half-twaalf`.
  - At 23:27:30 there is another minutes change (to `23:30`), so now the display is updated to `half-twaalf`.
 
+
+
+## 13. Model 6
+
+The hardware is done, the clock is running.
+The final step is to add software features.
+The application [WordClockFull](sketches/WordClockFull) is the end-user application.
+It contains the following features
+
+ - Color modes 
+   The colors used for the hours and minutes can be configured.
+   What's more, the color __mode__ can be configured: fixed, cycling or random.
+   And the refresh can be every 5 minutes (when the text changes) but also every minute (to have the clock more lively).
+   
+ - Display animations 
+   When the time changes, the display is refreshed. This might mean that the time is drawn in a different color
+   (see previous feature: color mode). It is also possible to animate the "old time text"
+   to the "new time text". The app has five animations built in: none, wipe, dots, pulse and mist.
+   
+ - Demo mode 
+   To show off the clock (the color modes and display animations) there is now a demo mode.
+   By pressing the (flash) button, the clock starts running at 15x speed.
+   
+ - A configuration interface 
+   When powering the WordClock, you have a couple of seconds to press the (flash) button of the ESP8266.
+   If you do that, the actual clock app will not start, instead the configuration app starts.
+   This means the ESP8266 starts a WiFi access point (plus DNS and DHCP server), and a web server.
+   When you connect to the web server with a laptop or smart phone, you get a web page with configuration parameters.
+   Typical parameters are: the SSID and password of your home wifi network, the time zone, 
+   the colors for the hours and minutes and the animations to be used.
+   When you commit the configuration, they are stored persistently, and the clock app will use them (even after a power cycle).
+   
+ - A NeoPixel test 
+   All LEDs in all NeoPixels are switched on one by one, to test if they are working.
+
+
+
+## 14. User manual
 
 
 (end)

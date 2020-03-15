@@ -29,9 +29,11 @@ All sketches are intended for an ESP8266.
  - [WordClockSimple](WordClockSimple)  
    A WordClock using NeoPixels, keeping time via NTP.
    All configuration choices hardwired in sketch.  
-   **This is the one that you might be looking for.**
+   **This is the one that you might be looking for if you want a working but simple clock.**
 
  - [WordClockFull](WordClockFull)  
-   A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration
-   Under construction.
-   
+   A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration (via web).
+   Supports color changes and display animations. Has a demo mode.
+   This is the one that you might be looking for if you want a full featured clock.
+   See the [mian page](../README.md#13-Model-6) for a list of features.
+    
