@@ -38,8 +38,8 @@ I had seen WordClocks before, e.g. [here](https://www.instructables.com/id/My-Ar
 However, doing the mechanics for 100 LEDs, isolating them (light bleed), wiring them - too much work.
 
 Then I stumbled on a simpler [version](http://www.espruino.com/Tiny+Word+Clock).
-It uses an 8x8 LED matrix, so very little mechanics to do.
-The downside is that 8x8 LEDs means we are very restricted on the _lettering_: 
+It uses an 8×8 LED matrix, so very little mechanics to do.
+The downside is that 8×8 LEDs means we are very restricted on the _lettering_: 
 which letters (words) are placed where and how.
 
 
@@ -47,7 +47,7 @@ which letters (words) are placed where and how.
 ## 2. Model 1
 
 I want a Dutch word clock.
-I do not like vertical text. Is it possible to fit all this on 8x8?
+I do not like vertical text. Is it possible to fit all this on 8×8?
 
 For the hours, we need words `een` (1) to `twaalf` (12). That is 48 characters - note we are writing `vĳf`, not `vijf`.
 This means that we can not have words for all 60 minutes. Let's try to go for multiples of 5 only.
@@ -90,13 +90,13 @@ This is my first attempt.
 
 ![Prototype 1](imgs/model1.jpg)
 
-The first prototype was made with an ESP8266, and an 8x8 LED matrix.
+The first prototype was made with an ESP8266, and an 8×8 LED matrix.
 The wiring is straightforward:
 
-![Led 8x8 wiring](imgs/led8x8wires3.png)
+![Led 8×8 wiring](imgs/led8×8wires3.png)
 
 I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
-at approximately 600x so that all states appear in a one minute movie.
+at approximately 600× so that all states appear in a one minute movie.
 
 I also made a [real clock](sketches/WordClockLed) and a
 [video](https://youtu.be/wVqeRSxwd_Y) that captures one state change.
@@ -122,11 +122,11 @@ Here is the [video](https://www.youtube.com/watch?v=LO9IB6KRluM) of the fast mod
 
 ## 4. 3D printing
 
-The good thing of the [8x8 LED matrix](https://www.aliexpress.com/item/32681183937.html) is that hardly any mechanics are needed. 
-The downside of the 8x8 LED matrix, is that the 8x8 matrix is small, in my case 32x32 mm².
+The good thing of the [8×8 LED matrix](https://www.aliexpress.com/item/32681183937.html) is that hardly any mechanics are needed. 
+The downside of the 8×8 LED matrix, is that the 8×8 matrix is small, in my case 32×32 mm².
 
-However, there are also [8x8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
-Twice as big (65x65 mm²), fully assembled and still affordable.
+However, there are also [8×8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
+Twice as big (65×65 mm²), fully assembled and still affordable.
 On top of that: the LEDs are full RGB and only a single wire to control all LEDs.
 
 This NeoPixel matrix is big enough to allow the clock to be 3D printed.
@@ -153,7 +153,7 @@ It contains a controller and three LEDs.
 
 ![Inside NeoPixel](imgs/neozoom.jpg)
 
-I did have a 4x4 NeoPixel board, and I investigated the power usage on that board.
+I did have a 4×4 NeoPixel board, and I investigated the power usage on that board.
 I measured the current when 1 NeoPixel is red (0xFF0000). I measured also for 2, 3, ... 16 NeoPixels.
 I measured the current when 1 NeoPixel is red but dimmed a bit (0xBF0000), and also for 2, 3, ... 16 NeoPixels.
 I measured the red at half brightness (0x7F0000) and at quarter brightness (0x3F0000), for 1 to 16 NeoPixels.
@@ -176,8 +176,8 @@ Conclusions:
  - A NeoPixel LED consumes 12.9mA when fully powered (0xFF).
  - The power usage of a NeoPixel LED is linear in the control value (00..FF).
  - The power usage of a NeoPixel sequence is linear in the number of NeoPixels switched on.
- - A 4x4 at full white (0xFFFFFF) thus consumes 16x3x12.9 + 16x0.5= 627 mA
- - A 8x8 at full white will likely consume 64x3x12.9 + 64x0.5 = 2509 mA or 2.5 A.
+ - A 4×4 at full white (0xFFFFFF) thus consumes 16x3x12.9 + 16x0.5= 627 mA
+ - A 8×8 at full white will likely consume 64×3×12.9 + 64×0.5 = 2509 mA or 2.5 A.
 
 
 
@@ -185,9 +185,9 @@ Conclusions:
 
 Finally, I received the NeoPixels matrix.
 
-![NeoPixel front](imgs/pcb8x8.jpg)
+![NeoPixel front](imgs/pcb8×8.jpg)
 
-![NeoPixel back](imgs/pcb8x8back.jpg)
+![NeoPixel back](imgs/pcb8×8back.jpg)
 
 Unfortunately, the resistors are not centered.
 Also the matrix is not equal in horizontal and vertical direction: 
@@ -197,7 +197,7 @@ I needed to make a new [3D model](https://a360.co/2RQO6uB).
 
 See below for the wiring; the resistor is 470 Ω, the capacitor 1000 µF 
 (see [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)).
-Note: The Neopixels run at 5V0, and the required signal level is at 70%, or 5V0 x 70%=3V5.
+Note: The Neopixels run at 5V0, and the required signal level is at 70%, or 5V0 × 70% = 3V5.
 Since the ESP8266 runs on 3V3, we are actually below spec.
 
 ![NeoPixel wiring](imgs/NeoWires.png)
@@ -340,7 +340,7 @@ All in all, we have a firm basis for having an accurate time.
 ## 8. Timing
 
 NeoPixels are controlled via a single serial line. One NeoPixel has three LEDs (red, green and blue), whose brightness
-can be controlled from 0..255. So to configure one NeoPixel, it needs to be send 3x8 bits. Since there is no clock, 
+can be controlled from 0..255. So to configure one NeoPixel, it needs to be send 3×8 bits. Since there is no clock, 
 biphase encoding is used: every bit uses a low and a high signal, so every bit has an edge (actually two). The
 [datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf) shows this picture of biphase encoding:
 
@@ -355,7 +355,7 @@ We notice the following
 
  - The bit clock is ~781kHz, which is close to the 800kHz from the documentation.
  - Note that the measured T1H is 0.89 µs, seems out of spec. It should be 0.7µs ± 150ns, that is 550ns..850ns, so 890 is too long.
- - The protocol is simple: the 3x8 bits are send, no overhead bits.
+ - The protocol is simple: the 3×8 bits are send, no overhead bits.
  - One NeoPixel thus takes 24/800k = 30µs to configure.
  - Pixel timing is confirmed in the capture: the whole transmission takes just over 30µs.
  - The bits are send MSB first, but in an unconventional order: GRB.
@@ -367,7 +367,7 @@ Next experiment is to send an RGB value to all 64 NeoPixels. This is my capture.
 ![Timing 64 NeoPixels](imgs/neo64.png)
 
 On this zoom level we can no longer see the indvidual bits. But sending 24 bits to each of the 64 neoPixels is expected to take
-30µ x 64 = 1.92 ms. The capture confirms this: 1.99 ms.
+30µ × 64 = 1.92 ms. The capture confirms this: 1.99 ms.
 
 Why is this relevant?
 On the ESP8266, this string is bit-banged: all bits are generated by software. 
@@ -435,12 +435,12 @@ typically never have one.
 We could use VIN as _output_ instead of _input_, and power the NeoPixels with VIN. 
 This means the NeoPixels run on 4V7, which is acceptable.
 That level is actually interesting, because the NeoPixel _data_ pin (DIN) requires at least 70% of VDD.
-And that would now be 70% x 4V7 = 3V29, which is below the signaling level of the ESP8266, which runs on 3V3.
+And that would now be 70% × 4V7 = 3V29, which is below the signaling level of the ESP8266, which runs on 3V3.
 
 However, before we get enthusiastic about this setup, there is one major drawback.
 The whole NeoPixel chain would draw current through the diode. The diode is typically limited to 250mA.
 That does not match well with the ([above](#neopixel-power)) computed maximum current of 2500mA
-(the power the tiny diode would need to dissipate would be 0.3V x 2.5A = 0.7W).  
+(the power the tiny diode would need to dissipate would be 0.3V × 2.5A = 0.7W).  
 
 The bigger boards with VUSB pins are too big for our 3D printed case. So I propose to use
 a small board (e.g. [Wemos D1 mini](https://www.aliexpress.com/item/32944522985.html)), remove the diode,
@@ -650,7 +650,7 @@ It contains the following features
    
  - Demo mode 
    To show off the clock (the color modes and display animations) there is now a demo mode.
-   By pressing the (flash) button, the clock starts running at 15x speed.
+   By pressing the (flash) button, the clock starts running at 15× speed.
    
  - A configuration interface 
    When powering the WordClock, you have a couple of seconds to press the (flash) button of the ESP8266.
@@ -667,6 +667,116 @@ It contains the following features
 
 
 ## 14. User manual
+
+The Dutch WordClock running the [WordClockFull](sketches/WordClockFull) firmware has the 
+following characteristics.
+
+### Hardware
+On the front site, we have 8×8 letters with RGB LEDs behind them.
+They form words that tell the time.
+This clock is made for the Dutch language.
+
+At the back site there are three user parts.
+There is the signaling LED, a user button and a micro USB connector.
+
+The signaling LED has two functions, described in more detail in the software chapter.
+Firstly, at startup, it blinks rapidly to signal that the user can press the button to enter configuration mode.
+When running the clock app, the signaling LED should be off (indicating WiFi connected and thus correct time).
+When the signaling LED is on this indicates that the WordClock is searching for a WiFi net to connect to.
+
+The button als has two functions.
+Firstly, at startup, when the signaling LED is blinking, a press on the button enters configuration mode.
+When running the clock app, pressing the button toggles between normal clock mode and demo mode (15× speed).
+
+Finally the USB connector has dual use.
+Its main use is power supply to the WordClock.
+
+The power usage can be estimated as follows, see also the section on [power](#9-Power-architecture).
+Let's assume the display shows 4 words of 4 characters (TIEN OVER HALF VIER), 
+each in a primary color (red, green, blue), and each at 20%.
+This comes close to the default configuration.
+Recall that a 100% powered LED consumes 13mA, the 64 NeoPixels have standby current of 32mA and the ESP8266 NodeMCU
+uses 80mA. This results in an operating current of 20% × 13 × 16 + 32 + 80 ≈ 160 mA.
+This is well within standard USB specification, which says 500mA max.
+
+The mist animation switches nearly all pixels on, to grey.
+The default mist color has 0x222222, which means 0x22 or 34 per color channel. This is 13% of full power.
+During mist, the pixels vary from 13% to 0%,so let's estimate 7% average.
+This means the power would be 7% × 13 × 50 × 3 + 32 + 80 ≈ 250 mA.
+Still half of max.
+
+This figures match quite well with actuals. We measure 148 where we estimated 160, and we measure 247 where we estimated 250.
+
+![Time](imgs/power-act1.jpg)  ![Animation](imgs/power-act2.jpg)
+
+The second use of the USB connector is software development.
+When the USB connector is connected to a PC, and a CH340 USB to serial driver is installed, 
+and you have a terminal program (115200/8/N/1) we can have a look at the WordClock log.
+You get something like this
+
+```
+main: WordClockFull v5                                                          
+                                                                                
+Cfg: Press button on pin 0 to enter configuration mode                          
+main: No configuration requested, started WordClockFull                         
+                                                                                
+neo : init                                                                      
+neo : tested                                                                    
+but : init                                                                      
+led : init                                                                      
+wifi: init: GuestFamPennings MaartenAP dePracht                                 
+clk : init: pool.ntp.org europe.pool.ntp.org north-america.pool.ntp.org         
+clk : timezones: CET-1CEST,M3.5.0,M10.5.0/3                                     
+clk : round: 150 sec                                                            
+ltrs: init                                                                      
+col : palette: 120000 001200 0C0C00 000018 222222                               
+col : max: R12 G12 B18                                                          
+col : modes: one cycle mist                                                     
+anim: init                                                                      
+                                                                                
+clk : 1970-01-01 09:00:05 (dst=0) [no NTP sync yet]                             
+clk : 1970-01-01 09:00:06 (dst=0) [no NTP sync yet]                             
+clk : 1970-01-01 09:00:07 (dst=0) [no NTP sync yet]                             
+wifi: connected to GuestFamPennings, IP address 192.168.179.102                 
+clk : 1970-01-01 09:00:08 (dst=0) [no NTP sync yet]                             
+clk : 2020-03-15 20:31:13 (dst=0) 20:33 (mist) half/0C0C00 negen/120000         
+clk : 2020-03-15 20:31:14 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:15 (dst=0) 20:33                                         
+anim: mist - stop (2360 ms)                                                     
+clk : 2020-03-15 20:31:16 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:17 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:18 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:19 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:20 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:21 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:22 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:23 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:24 (dst=0) 20:33                                         
+clk : 2020-03-15 20:31:25 (dst=0) 20:33                                         
+```    
+
+Maybe more important, the USB connector can be used to upgrade the firmware.
+
+### Install firmware
+
+This section is deliberately short. There are plenty of sites explaining how to install Arduino apps, 
+even from [myself ](https://github.com/maarten-pennings).
+
+Download and install [Arduino IDE](https://www.arduino.cc/en/Main/Software) and then the 
+[ESP8266 compiler and libraries](https://www.instructables.com/id/Quick-Start-to-Nodemcu-ESP8266-on-Arduino-IDE/).
+
+Download the [WordClockFull][sketches/WordClockFull].
+It does need the [configuration library](https://github.com/maarten-pennings/Cfg)
+and the [persistent storage library](https://github.com/maarten-pennings/Nvm)
+
+The libraries need to be stored in the Arduino library directory
+(mine is here `C:\Users\Maarten\Documents\Arduino\libraries`) and the WordClock app
+itself can be stored anywhere, but most people store it in the Arduino directory
+(here `C:\Users\Maarten\Documents\Arduino\' for me).
+
+
+### Software
+
 
 
 (end)
