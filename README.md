@@ -653,7 +653,7 @@ It contains the following features
    By pressing the (flash) button, the clock starts running at 15× speed.
    
  - A configuration interface 
-   When powering the WordClock, you have a couple of seconds to press the (flash) button of the ESP8266.
+   When powering the WordClock, you have some time to press the (flash) button of the ESP8266.
    If you do that, the actual clock app will not start, instead the configuration app starts.
    This means the ESP8266 starts a WiFi access point (plus DNS and DHCP server), and a web server.
    When you connect to the web server with a laptop or smart phone, you get a web page with configuration parameters.
@@ -679,6 +679,8 @@ This clock is made for the Dutch language.
 At the back site there are three user parts.
 There is the signaling LED, a user button and a micro USB connector.
 
+![User parts](imgs/mechanics.jpg)
+
 The signaling LED has two functions, described in more detail in the software chapter.
 Firstly, at startup, it blinks rapidly to signal that the user can press the button to enter configuration mode.
 When running the clock app, the signaling LED should be off (indicating WiFi connected and thus correct time).
@@ -692,11 +694,11 @@ Finally the USB connector has dual use.
 Its main use is power supply to the WordClock.
 
 The power usage can be estimated as follows, see also the section on [power](#9-Power-architecture).
-Let's assume the display shows 4 words of 4 characters (TIEN OVER HALF VIER), 
+Let's assume the display shows 17 characters (TIEN VOOR HALF NEGEN), 
 each in a primary color (red, green, blue), and each at 20%.
 This comes close to the default configuration.
 Recall that a 100% powered LED consumes 13mA, the 64 NeoPixels have standby current of 32mA and the ESP8266 NodeMCU
-uses 80mA. This results in an operating current of 20% × 13 × 16 + 32 + 80 ≈ 160 mA.
+uses 80mA. This results in an operating current of 20% × 13 × 17 + 32 + 80 ≈ 156 mA.
 This is well within standard USB specification, which says 500mA max.
 
 The mist animation switches nearly all pixels on, to grey.
@@ -705,7 +707,7 @@ During mist, the pixels vary from 13% to 0%,so let's estimate 7% average.
 This means the power would be 7% × 13 × 50 × 3 + 32 + 80 ≈ 250 mA.
 Still half of max.
 
-This figures match quite well with actuals. We measure 148 where we estimated 160, and we measure 247 where we estimated 250.
+This figures match quite well with actuals. We measure 148 where we estimated 156, and we measure 247 where we estimated 250.
 
 ![Time](imgs/power-act1.jpg)  ![Animation](imgs/power-act2.jpg)
 
@@ -772,11 +774,42 @@ and the [persistent storage library](https://github.com/maarten-pennings/Nvm)
 The libraries need to be stored in the Arduino library directory
 (mine is here `C:\Users\Maarten\Documents\Arduino\libraries`) and the WordClock app
 itself can be stored anywhere, but most people store it in the Arduino directory
-(here `C:\Users\Maarten\Documents\Arduino\' for me).
+(thus `C:\Users\Maarten\Documents\Arduino\` for me).
 
 
-### Software
+### Normal operation
 
+When the WordClock is powered it should start with a blank display.
+Sometimes it powers with the display showing the last time; this is due to the large internal capacitor
+which helps the NeoPixel display to retain state.
+
+After power up, the WordClock first gives the user the options to enter configuration mode.
+Entering configuration mode is achieved by pressing the button at the back while the signaling LED at the back is blinking.
+If the button is not pressed during the blinking (which takes about one second), the WordClock app starts.
+We will describe that first.
+
+The WordClock app starts with the signaling LED on. This indicates the WordClock has no WiFi connection (yet).
+The first step of the WordClock app is a NeoPixel test: all red LEDs are turned on one-by-one, then all green LEDs and finally
+all blue LEDs. 
+
+After the NeoPixel test finishes, the display blanks. The display stays blank until time is known.
+For this, the WordClock needs to connect to WiFi. Once that is successful, the signaling LED switches off (normal state).
+Next step is to sync with NTP services. If that is successful, WordClock knows time, and shows that on the display.
+
+If later, the WiFi connection is lost, the signaling LED switches on again (until the next WiFi connect).
+When there is no WiFi, there is no NTP sync. But once time has been synced, the internal processor
+keeps track of time itself (with a drift of ±1s per day)
+
+There is one feature while running: the button at the back toggles demo mode.
+In demo mode, time runs at 15× speed. This shows off the animations.
+Demo mode starts with current time, but quickly deviates because it runs faster.
+When the button is pressed again, demo mode is off, and the clock shows the real time again.
+
+When the WordClock is correctly configured, it will also switch to daylight saving time and back to standard time
+at the correct moment.
+
+
+### Configuration
 
 
 (end)
