@@ -868,20 +868,20 @@ below the ones of (`Color.h`, `Color.m1`, `Color.m2`, `Color.p`).
 The last color (`Color.a`) is used for animations that need an extra color ("wipe" and "mist").
 
 The last section is **Display**.  
-This section determines the animations.
+This section determines the animations.  
 `Refresh` is either "one" or "five". It determines how often the display is refreshed:
-either every minute ("one") or every five minutes ("five").
-Note that only every five minutes the time reading actually changes (since the clock display resolution is 5 minutes).
+either every minute ("one") or every five minutes ("five"). Note that only every five minutes the 
+time reading actually changes (since the clock display resolution is 5 minutes).
 So selecting "one" makes no sense when mapping is "fix" and animation is "none".  
 `Mapping` determines the colors used for the words. "fix" uses the colors as defined in the color palette section.  
-The "cycle" mapping also uses the colors, but every refresh the colors are cycled.  
-Finally, the "random" mapping generates random colors for the words (never duplicates, never black).
+The "cycle" mapping also uses the colors, but every refresh the colors are cycled.
+Finally, the "random" mapping generates random colors for the words (never duplicates, never black).  
 The `Animation` setting determines the animation for every refresh.
-The ["none"](https://youtu.be/OCgUQ6qWnN4) animation instantly removes the old time and adds the new time.
-The ["wipe"](https://youtu.be/U9yd8xaslh4) animation moves a column (in `Color.a`) from left to right erasing the old time before it and adding the new time behind it.
-The ["dots"](https://youtu.be/AXKME2LGA_A) removes the old time one pixel at a time, then adds the new time one at a time.
-The ["pulse"](https://youtu.be/F0VIralrmUM) animation dims the old time down, then dims the new time up.
-Finally, the ["mist"](https://youtu.be/u285F07go_c) animation covers the old time be adding mist pixels (`Color.a`), then uncovers the new time by removing mist pixels.
+The [none](https://youtu.be/OCgUQ6qWnN4) animation instantly removes the old time and adds the new time.
+The [wipe](https://youtu.be/U9yd8xaslh4) animation moves a column (in `Color.a`) from left to right erasing the old time before it and adding the new time behind it.
+The [dots](https://youtu.be/AXKME2LGA_A) removes the old time one pixel at a time, then adds the new time one at a time.
+The [pulse](https://youtu.be/F0VIralrmUM) animation dims the old time down, then dims the new time up.
+Finally, the [mist](https://youtu.be/u285F07go_c) animation covers the old time be adding mist pixels (`Color.a`), then uncovers the new time by removing mist pixels.
 
 
 (end)
