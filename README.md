@@ -3,8 +3,9 @@ A clock that tells time in plain text. In Dutch, e.g. "TIEN OVER HALF TWAALF".
 
 ![WordClock](imgs/wordclock.jpg)
 
-Commercial [products](https://qlocktwo.com/) exist, but I'm making my own. 
-There is a [video](https://youtu.be/0UkmPO7tGsg) looking at the mechanics,
+Commercial [products](https://qlocktwo.com/) exist, but I'm making my own.
+
+There is a [video](https://youtu.be/0UkmPO7tGsg) looking at the mechanics (casing) of the WordClock,
 and a [video](https://youtu.be/4AUioVwlsqg) comparing it to a DCF77 clock.
 
 Here are some demos of animations 
@@ -14,6 +15,7 @@ Here are some demos of animations
 [pulse](https://youtu.be/F0VIralrmUM), and
 [mist](https://youtu.be/u285F07go_c).
 
+This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSwM-FqwnLM_yhguJa) of all WordClock videos.
 
 ## Table of contents
 
@@ -191,9 +193,9 @@ Conclusions:
 
 Finally, I received the NeoPixels matrix.
 
-![NeoPixel front](imgs/pcb8×8.jpg)
+![NeoPixel front](imgs/pcb8x8.jpg)
 
-![NeoPixel back](imgs/pcb8×8back.jpg)
+![NeoPixel back](imgs/pcb8x8back.jpg)
 
 Unfortunately, the resistors are not centered.
 Also the matrix is not equal in horizontal and vertical direction: 
@@ -862,9 +864,10 @@ The first color (`Color.h`) is used for the hour word.
 The second color (`Color.m1`) is used for the minutes ("vijf", "tien", "kwart").
 The third color (`Color.m2`) is used for the word "half".
 The fourth color (`Color.p`) is used for the prepositions ("voor" and "over").
-If `Color.m1` and `Color.m2` are equal, "half" will always be colored the same as "vijf", "tien" and "kwart" (in "cycle" and "random" mapping).
+If `Color.m1` and `Color.m2` are equal, "half" will always be colored the same as "vijf", "tien" and "kwart" 
+(in "cycle" and "random" mapping).
 If mapping is "random", the RGB components of the generated random colors will always be 
-below the ones of (`Color.h`, `Color.m1`, `Color.m2`, `Color.p`).
+below the maximum of `Color.h`, `Color.m1`, `Color.m2`, `Color.p`.  
 The last color (`Color.a`) is used for animations that need an extra color ("wipe" and "mist").
 
 The last section is **Display**.  
