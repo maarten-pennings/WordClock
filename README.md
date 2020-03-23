@@ -349,8 +349,9 @@ All in all, we have a firm basis for having an accurate time.
 
 NeoPixels are controlled via a single serial line. One NeoPixel has three LEDs (red, green and blue), whose brightness
 can be controlled from 0..255. So to configure one NeoPixel, it needs to be send 3×8 bits. Since there is no clock, 
-biphase encoding is used: every bit uses a low and a high signal, so every bit has an edge (actually two). The
-[datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf) shows this picture of biphase encoding:
+biphase encoding is used: every bit uses a low and a high signal, so every bit has an edge (actually two). The datasheet 
+[WS2812B](https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf) or [WS2812](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf)
+shows this picture of biphase encoding:
 
 ![biphase encoding](imgs/neobiphase.png)
 
@@ -367,7 +368,8 @@ We notice the following
  - One NeoPixel thus takes 24/800k = 30µs to configure.
  - Pixel timing is confirmed in the capture: the whole transmission takes just over 30µs.
  - The bits are send MSB first, but in an unconventional order: GRB.
- - The [datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf) confirms the order
+ - The datasheet [WS2812B](https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf) or
+   [WS2812](https://cdn-shop.adafruit.com/datasheets/WS2812.pdf) confirms the order
    ![NeoPixel color order](imgs/neoorder.png).
 
 Next experiment is to send an RGB value to all 64 NeoPixels. This is my capture.
