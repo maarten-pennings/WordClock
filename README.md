@@ -101,7 +101,7 @@ This is my first attempt.
 The first prototype was made with an ESP8266, and an 8×8 LED matrix.
 The wiring is straightforward:
 
-![Led 8×8 wiring](imgs/led8×8wires3.png)
+![Led 8×8 wiring](imgs/led8x8wires3.png)
 
 I made a [video](https://www.youtube.com/watch?v=YDhCZarNm9g) that runs 
 at approximately 600× so that all states appear in a one minute movie.
@@ -136,6 +136,11 @@ The downside of the 8×8 LED matrix, is that the 8×8 matrix is small, in my cas
 However, there are also [8×8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
 Twice as big (65×65 mm²), fully assembled and still affordable.
 On top of that: the LEDs are full RGB and only a single wire to control all LEDs.
+
+Note that most new NeoPixel boards use the WS2812B. This is a 4 pin device. 
+Its predecessor is known as WS2812 (without the B). This is a 6 pin device.
+
+![WS2812 and WS2812B](imgs/ws2812-ws2812b.png)
 
 This NeoPixel matrix is big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
