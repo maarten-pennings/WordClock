@@ -674,9 +674,9 @@ It contains the following features
    When you connect to the web server with a laptop or smart phone, you get a web page with configuration parameters.
    Typical parameters are: the SSID and password of your home wifi network, the time zone, 
    the colors for the hours and minutes and the animations to be used.
-   When you commit the configuration, they are stored persistently, and the clock app will use them (even after a power cycle).
+   When you commit the configuration, the parameters are stored persistently, and the clock app will use them (even after a power cycle).
    
- - A NeoPixel test 
+ - A NeoPixel test  
    All LEDs in all NeoPixels are switched on one by one, to test if they are working.
 
 
