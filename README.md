@@ -653,21 +653,21 @@ The final step is to add software features.
 The application [WordClockFull](sketches/WordClockFull) is the end-user application.
 It contains the following features
 
- - Color modes 
+ - Color modes  
    The colors used for the hours and minutes can be configured.
    What's more, the color __mode__ can be configured: fixed, cycling or random.
    And the refresh can be every 5 minutes (when the text changes) but also every minute (to have the clock more lively).
    
- - Display animations 
+ - Display animations  
    When the time changes, the display is refreshed. This might mean that the time is drawn in a different color
    (see previous feature: color mode). It is also possible to animate the "old time text"
    to the "new time text". The app has five animations built in: none, wipe, dots, pulse and mist.
    
- - Demo mode 
+ - Demo mode  
    To show off the clock (the color modes and display animations) there is now a demo mode.
    By pressing the (flash) button, the clock starts running at 15× speed.
    
- - A configuration interface 
+ - A configuration interface  
    When powering the WordClock, you have some time to press the (flash) button of the ESP8266.
    If you do that, the actual clock app will not start, instead the configuration app starts.
    This means the ESP8266 starts a WiFi access point (plus DNS and DHCP server), and a web server.
