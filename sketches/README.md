@@ -5,20 +5,20 @@ All sketches are intended for an ESP8266.
 
  - [WordClockLed](WordClockLed)  
    A clock that tells time, in Dutch, in steps of 5 minutes on a MAX7221 controlled 8x8 LED matrix.
-   Clock is hand-set (with flash button) and runs on ESP8266 crystal.
+   The clock is hand-set (with flash button) and runs on ESP8266 crystal.
    It also has a demo mode: every 0.1ms the clock advances 1 minute.
    
  - [NeoPixelAmps](NeoPixelAmps)  
    Sketch used to measure power used by NeoPixels.
-   Used for electronics design (amps needed).
+   Used for electronics design: determine how many amps are needed.
    
  - [WordClockNeo](WordClockNeo)  
-   A clock that tells time, in Dutch, in steps of 5 minutes on a NeoPixel 8x8 LED matrix
-   Clock is hand-set (with flash button) and runs on ESP8266 crystal
+   A clock that tells time, in Dutch, in steps of 5 minutes on a NeoPixel 8x8 LED matrix.
+   The clock is hand-set (with flash button) and runs on ESP8266 crystal
    It also has a demo mode: every 0.1ms the clock advances 1 minute
 
  - [TimeKeeping](TimeKeeping)  
-   Keep track of time via NTP (local time zone and daylight saving time included).
+   Keep track of time via NTP servers; local time zone and daylight saving time included.
    This is just time keeping. In a later step, this is integrated into `WordClockNeo`
    resulting in `WordClockSimple`.
 
