@@ -508,6 +508,14 @@ wire as described in [modding](#modding-the-board).
 
 ![Schematic](imgs/schematic.jpg)
 
+Some notes, added after the project was finished.
+ - The breadboard version suggests that the level shifter is not needed at all.
+ - With the level shifter, it is working fine. But the claim "playig safe" is naive; the level shifter spec 
+   suggests it can _not_ keep up with the signalling speed (800kHz).
+ - I have found another [level shifting trick](https://twitter.com/strooom/status/1107028243822141440). 
+   Did not try [it](imgs/3v3-5v0-schem.png) out myself, but a quick [measurement](imgs/3v3-5v0-scope.png) seems to validat it.
+
+
 I added the level shifter in a similar manner as that I added the expansion board for the button.
 But this boards has no mechanical stress, so I used only two wires to tie it to the ESP board.
 
@@ -556,7 +564,7 @@ I decided to make a "simple" version first.
 No (dynamic) configuration, no animations.
 Find this sketch in [WordClockSimple](sketches/WordClockSimple).
 
-Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case, LED, back and front.
+Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case - back and front - and the signalling LED.
 
 Here is a [video](https://youtu.be/4AUioVwlsqg) with the clock running, comparing it to a DCF77 clock.
 
@@ -716,11 +724,11 @@ Recall that a 100% powered LED consumes 13mA, the 64 NeoPixels have standby curr
 uses 80mA. This results in an operating current of 20% × 13 × 17 + 32 + 80 ≈ 156 mA.
 This is well within standard USB specification, which says 500mA max.
 
-The mist animation switches nearly all pixels on, to grey.
-The default mist color has 0x222222, which means 0x22 or 34 per color channel. This is 13% of full power.
-During mist, the pixels vary from 13% to 0%,so let's estimate 7% average.
-This means the power would be 7% × 13 × 50 × 3 + 32 + 80 ≈ 250 mA.
-Still half of max.
+The mist animation switches nearly all pixels on, to gray.
+The default mist color is 0x222222, which means 0x22 or 34 per color channel. This is 34/255 or 13% of full power.
+During mist, the pixels vary from 13% to 0%,so let's estimate 7% average for 50 pixels for all three LEDs (gray).
+This means the power estimate is 7% × 13 × 50 × 3 + 32 + 80 ≈ 250 mA.
+Still half of the max USB spec (500mA).
 
 This figures match quite well with actuals. We measure 148 where we estimated 156, and we measure 247 where we estimated 250.
 
@@ -860,10 +868,10 @@ If you have fewer than three, just leave them blank.
 The next section is **Time management**.  
 Here you type the host name of three NTP servers (`NTP.server.1`, `NTP.server.2`, and `NTP.server.3`). 
 Probably the default servers are ok.  
-The `Timezone` field defines standard timezone you want (with respect to UTC). It also defines the daylight 
+The `Timezone` field defines the standard timezone you want (with respect to UTC). It also defines the daylight 
 saving timezone (DST) and when it starts and stops. The syntax of this field is described 
 [here](https://www.gnu.org/software/libc/manual/html_node/TZ-Variable.html).  
-The `Round` field ads seconds to time to do the rounding up. See details [above](#12-model-5).
+The `Round` field adds seconds to time to do the rounding up. See details [above](#12-model-5).
 
 The third section is **Color palette**.  
 All fields should have 6 hexadecimal digits (0..9, A..F), with two digits for red, two for green and two for blue.
@@ -882,7 +890,8 @@ This section determines the animations.
 `Refresh` is either "one" or "five". It determines how often the display is refreshed:
 either every minute ("one") or every five minutes ("five"). Note that only every five minutes the 
 time reading actually changes (since the clock display resolution is 5 minutes).
-So selecting "one" makes no sense when mapping is "fix" and animation is "none".  
+So selecting "one" makes no sense when mapping is "fix" and animation is "none", but when mapping
+is not "fix" or animation is not "none" there is a color change an/or animation every minute.
 `Mapping` determines the colors used for the words. "fix" uses the colors as defined in the color palette section.  
 The "cycle" mapping also uses the colors, but every refresh the colors are cycled.
 Finally, the "random" mapping generates random colors for the words (never duplicates, never black).  
