@@ -205,7 +205,7 @@ Finally, I received the NeoPixels matrix.
 Unfortunately, the resistors are not centered.
 Also the matrix is not equal in horizontal and vertical direction: 
 in horizontal direction the spacing is ~8.1mm and in vertical direction the spacing is ~8.3mm.
-Result: he 3D print does not fit well.
+Result: the 3D print does not fit well.
 I needed to make a new [3D model](https://a360.co/2RQO6uB).
 
 See below for the wiring; the resistor is 470 Ω, the capacitor 1000 µF 
