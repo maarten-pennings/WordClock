@@ -109,7 +109,7 @@ uint32_t col_parse(const char * cfgid) {
     }
     if( ishex ) return col;
   }
-  Serial.printf("ltrs: ERROR in %s (%s)\n",cfgid,val);
+  Serial.printf("col : ERROR in %s (%s)\n",cfgid,val);
   return 0x101010; // Not 6 hex digits, return grey
 }
 
@@ -127,7 +127,7 @@ int col_refresh_parse() {
   if( strcmp(val,"one" )==0 ) return COL_REFRESH_ONE;
   if( strcmp(val,"five")==0 ) return COL_REFRESH_FIVE;
   int dft= COL_REFRESH_ONE;
-  Serial.printf("ltrs: ERROR in %s (%s->%s)\n",cfgid,val,col_refresh_unparse(dft));
+  Serial.printf("col : ERROR in %s (%s->%s)\n",cfgid,val,col_refresh_unparse(dft));
   return dft;
 }
 
@@ -147,7 +147,7 @@ int col_mapping_parse() {
   if( strcmp(val,"cycle"  )==0 ) return COL_MAPPING_CYCLE;
   if( strcmp(val,"random" )==0 ) return COL_MAPPING_RANDOM;
   int dft= COL_MAPPING_CYCLE;
-  Serial.printf("ltrs: ERROR in %s (%s->%s)\n",cfgid,val,col_mapping_unparse(dft));
+  Serial.printf("col : ERROR in %s (%s->%s)\n",cfgid,val,col_mapping_unparse(dft));
   return dft;
 }
 
@@ -173,7 +173,7 @@ int col_animation_parse() {
   if( strcmp(val,"mist"  )==0 ) return COL_ANIMATION_MIST;
   if( strcmp(val,"random")==0 ) return COL_ANIMATION_RANDOM;
   int dft= COL_ANIMATION_MIST;
-  Serial.printf("ltrs: ERROR in %s (%s->%s)\n",cfgid,val,col_animation_unparse(dft));
+  Serial.printf("col : ERROR in %s (%s->%s)\n",cfgid,val,col_animation_unparse(dft));
   return dft;
 }
 
@@ -1240,15 +1240,15 @@ void anim_init() {
 // Initialize all drivers (optionally go into configuration mode)
 void setup() {
   Serial.begin(115200);
+  neo_off(); // Switch pixels off (might be on due to capacitor)
+  delay(1000); // We need a bit of delay (due to the capacitor?) to detect the button - todo: find root cause
   Serial.printf("\n\nmain: WordClockFull v%s\n\n",VERSION);
-  neo_off(); // Switch pixels off (even when going to config mode)
 
   // On boot: check if config button is pressed
-  delay(1000); // We need a bit of delay (due to the enormous capacitor?) to detect the button
   cfg.check(60,CFG_BUT_PIN); // Wait 60 flashes (of 50ms) for a change on pin CFG_BUT_PIN
   // if in config mode, do config setup (when config completes, it restarts the device)
   if( cfg.cfgmode() ) { cfg.setup(); return; }
-  Serial.printf("main: no configuration requested, started WordClockFull\n\n");
+  Serial.printf("main: no configuration requested, started WordClockFull v%s\n\n",VERSION);
 
   neo_init(); 
   but_init();
