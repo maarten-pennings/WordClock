@@ -1,5 +1,5 @@
 // WordClockFull.ino - A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration, color
-#define VERSION "5"
+#define VERSION "6"
 
 #include <time.h>
 #include <ESP8266WiFi.h>
@@ -37,7 +37,7 @@ NvmField cfg_fields[] = {
   {"Display"         , ""                           ,  0, "Which colors are used when. " },
   {"Refresh"         , "one"                        ,  8, "When is the display refreshed: <b>one</b> (every minute - useless for <b>fix</b>/<b>none</b>), <b>five</b> (every 5 minutes)." },
   {"Mapping"         , "cycle"                      ,  8, "Mapping: <b>fix</b> (fixed to default), <b>cycle</b> (colors cycle over categories), <b>random</b> (random, max from colors h,m1,m2,p)." },  
-  {"Animation"       , "mist"                       ,  8, "The animation: <b>none</b>, <b>wipe</b> (vertical bar, using Color.a), <b>dots</b> (letter by letter off then on), <b>pulse</b> (dim down then up), <b>mist</b> (using Color.a). " },  
+  {"Animation"       , "mist"                       ,  8, "The animation: <b>none</b>, <b>wipe</b> (vertical bar, using Color.a), <b>dots</b> (letter by letter off then on), <b>pulse</b> (dim down then up), <b>mist</b> (using Color.a), or <b>random</b>. " },  
   {0                 , 0                            ,  0, 0},  
 };
 
@@ -70,26 +70,26 @@ typedef struct { // Colors from config
   uint32_t a;
 } palette5_t;
 
-
 // Values retrieved from Cfg
 
-palette5_t col_palette;       // The colors as configured by the user
-palette3_t col_maxima;        // Maxima from col_palette - see col_init()
+palette5_t col_palette;        // The colors as configured by the user
+palette3_t col_maxima;         // Maxima from col_palette - see col_init()
 
-#define COL_REFRESH_ONE     1 // cfg string: one
-#define COL_REFRESH_FIVE    5 // cfg string: five
+#define COL_REFRESH_ONE      1 // cfg string: one
+#define COL_REFRESH_FIVE     5 // cfg string: five
 int col_refresh;   
 
-#define COL_MAPPING_FIX     1 // cfg string: fix
-#define COL_MAPPING_CYCLE   2 // cfg string: cycle
-#define COL_MAPPING_RANDOM  3 // cfg string: random
+#define COL_MAPPING_FIX      1 // cfg string: fix
+#define COL_MAPPING_CYCLE    2 // cfg string: cycle
+#define COL_MAPPING_RANDOM   3 // cfg string: random
 int col_mapping;   
 
-#define COL_ANIMATION_NONE  1 // cfg string: none
-#define COL_ANIMATION_WIPE  2 // cfg string: wipe
-#define COL_ANIMATION_DOTS  3 // cfg string: dots
-#define COL_ANIMATION_PULSE 4 // cfg string: pulse
-#define COL_ANIMATION_MIST  5 // cfg string: mist
+#define COL_ANIMATION_NONE   1 // cfg string: none
+#define COL_ANIMATION_WIPE   2 // cfg string: wipe
+#define COL_ANIMATION_DOTS   3 // cfg string: dots
+#define COL_ANIMATION_PULSE  4 // cfg string: pulse
+#define COL_ANIMATION_MIST   5 // cfg string: mist
+#define COL_ANIMATION_RANDOM 6 // cfg string: random // must be the last in the enum - see AnimRandom::start()
 int col_animation; 
 
 // The parse and unparse routines
@@ -113,14 +113,14 @@ uint32_t col_parse(const char * cfgid) {
   return 0x101010; // Not 6 hex digits, return grey
 }
 
-// Converts an integer refresh value (one, five) to a string one.
+// Converts an integer refresh value (one, five) to a string.
 const char * col_refresh_unparse(int val) {
   if(      val==COL_REFRESH_ONE  ) return "one";
   else if( val==COL_REFRESH_FIVE ) return "five";
   else return "?refresh?";
 }
 
-// Converts a string refresh value (one, five) to an integer one.
+// Converts a string refresh value (one, five) to an integer.
 int col_refresh_parse() {
   const char * cfgid= "Refresh";
   char * val= cfg.getval(cfgid);
@@ -131,7 +131,7 @@ int col_refresh_parse() {
   return dft;
 }
 
-// Converts an integer mapping value (fix, cycle, random) to a string one.
+// Converts an integer mapping value (fix, cycle, random) to a string.
 const char * col_mapping_unparse(int val) {
   if(      val==COL_MAPPING_FIX    ) return "fix";
   else if( val==COL_MAPPING_CYCLE  ) return "cycle";
@@ -139,7 +139,7 @@ const char * col_mapping_unparse(int val) {
   else return "?mapping?";
 }
 
-// Converts a string mapping value (fix, cycle, random) to an integer one.
+// Converts a string mapping value (fix, cycle, random) to an integer.
 int col_mapping_parse() {
   const char * cfgid= "Mapping";
   char * val= cfg.getval(cfgid);
@@ -151,17 +151,18 @@ int col_mapping_parse() {
   return dft;
 }
 
-// Converts an integer animation value (none, wipe, dots, pulse, mist) to a string one.
+// Converts an integer animation value (none, wipe, dots, pulse, mist, random) to a string.
 const char * col_animation_unparse(int val) {
   if(      val==COL_ANIMATION_NONE  ) return "none";
   else if( val==COL_ANIMATION_WIPE  ) return "wipe";
   else if( val==COL_ANIMATION_DOTS  ) return "dots";
   else if( val==COL_ANIMATION_PULSE ) return "pulse";
   else if( val==COL_ANIMATION_MIST  ) return "mist";
+  else if( val==COL_ANIMATION_RANDOM) return "random";
   else return "?animation?";
 }
 
-// Converts a string animation value (none, wipe, dots, pulse, mist) to an integer one.
+// Converts a string animation value (none, wipe, dots, pulse, mist) to an integer.
 int col_animation_parse() {
   const char * cfgid= "Animation";
   char * val= cfg.getval(cfgid);
@@ -170,6 +171,7 @@ int col_animation_parse() {
   if( strcmp(val,"dots"  )==0 ) return COL_ANIMATION_DOTS;
   if( strcmp(val,"pulse" )==0 ) return COL_ANIMATION_PULSE;
   if( strcmp(val,"mist"  )==0 ) return COL_ANIMATION_MIST;
+  if( strcmp(val,"random")==0 ) return COL_ANIMATION_RANDOM;
   int dft= COL_ANIMATION_MIST;
   Serial.printf("ltrs: ERROR in %s (%s->%s)\n",cfgid,val,col_animation_unparse(dft));
   return dft;
@@ -232,7 +234,7 @@ uint32_t col_merge(uint32_t col1, uint32_t col2) {
 }
 
 // Returns a random color, using global `col_maxima` as maxima for the R, G, and B components.
-// Will not returnd black (0x000000) has a 75% preference for max, and a 25% preference for below max (quantized to 5).
+// Will not returnd black (0x000000); has a 75% preference for max; and a 25% preference for below max (quantized to 5).
 uint32_t col_random() {
   // If we do truly random, colors get a bit washed out and equal, or even black. Introduce bias to hi.
   // We generate a 3 bit vector telling which of the (r,g,b) components are included
@@ -301,7 +303,7 @@ palette4_t * col_next() {
       break;
       
     case COL_MAPPING_RANDOM :
-      // Generate distinct colors
+      // Generate random but unique colors
       palette.h = col_random();
       do { palette.m1= col_random(); } while( palette.h==palette.m1 );
       do { palette.m2= col_random(); } while( palette.h==palette.m2 || palette.m1==palette.m2 );
@@ -320,7 +322,7 @@ palette4_t * col_next() {
 
 
 // BUT (button) ==========================================================================
-// Driver for the built-in button - used to force a screen refresh
+// Driver for the built-in button - used for user input (configure, demo)
 
 #define BUT_PIN 0
 
@@ -386,11 +388,30 @@ void led_init() {
 // WIFI (WiFi access points) =========================================================================
 // Driver for WiFi and connection status
 
+void wifi_sethostname(int len=WL_MAC_ADDR_LENGTH) {
+  const char prefix[]= "WordClock-";
+  char hname[3*WL_MAC_ADDR_LENGTH+1+sizeof(prefix)];
+  char * p= (char*)&hname;
+  for( const char * q=prefix; *q!=0; ) *p++= *q++;
+  uint8_t macbuf[WL_MAC_ADDR_LENGTH];
+  WiFi.macAddress(macbuf);
+  for(int i=WL_MAC_ADDR_LENGTH-len; i<WL_MAC_ADDR_LENGTH; i++ ) {
+    uint8 d1=(macbuf[i]>>4)&0x0f;
+    uint8 d0=(macbuf[i]>>0)&0x0f;
+    *p++= d1>=10 ? d1+'A'-10 : d1+'0';
+    *p++= d0>=10 ? d0+'A'-10 : d0+'0';
+  }
+  *p= '\0';
+  WiFi.hostname(hname);
+  Serial.printf("wifi: host: %s\n", hname);
+}
+
 ESP8266WiFiMulti wifiMulti;
 
 // Initializes the WiFi driver.
 // Sets up WiFi for the three SSIDs the user configured.
 void wifi_init() {
+  wifi_sethostname(3);
   WiFi.persistent(false);
   WiFi.mode(WIFI_STA);
   Serial.printf("wifi: init:");
@@ -576,7 +597,7 @@ void neo_init() {
 // Mapping words (letters) to NeoPixels (indices)
 
 // The NeoPixels are numbered from bottom to top, from right to left (this matches the 8x8 matrix order).
-// Assumption: IN side of the board is on the lower right hand (looking to the front)
+// Assumption: the IN side of the board is on the lower right hand (looking to the front)
 // 63 62 61 60 59 58 57 56  -  KWARTIEN
 // 55 54 53 52 51 50 49 48  -  VYF*VOOR 
 // 47 46 45 44 43 42 41 40  -  OVERHALF
@@ -607,7 +628,7 @@ const int ltrs_hour_een[]    = {10,9,8,-1};
 const int ltrs_hour_twaalf[] = {7,6,5,4,3,2,-1};
 
 // Array of the hours (note that indices 0 and 13 are filled, for 0:15 respectively 12:45)
-const int*ltrs_hours[] = {ltrs_hour_twaalf,ltrs_hour_een,ltrs_hour_twee,ltrs_hour_drie,ltrs_hour_vier,ltrs_hour_vijf,ltrs_hour_zes,ltrs_hour_zeven,ltrs_hour_acht,ltrs_hour_negen,ltrs_hour_tien,ltrs_hour_elf,ltrs_hour_twaalf,ltrs_hour_een};
+const int*ltrs_hours[14] = {ltrs_hour_twaalf,ltrs_hour_een,ltrs_hour_twee,ltrs_hour_drie,ltrs_hour_vier,ltrs_hour_vijf,ltrs_hour_zes,ltrs_hour_zeven,ltrs_hour_acht,ltrs_hour_negen,ltrs_hour_tien,ltrs_hour_elf,ltrs_hour_twaalf,ltrs_hour_een};
 
 // Helpers function to print the current time in words over Serial
 void ltrs_print( const int word[] ) {
@@ -734,6 +755,8 @@ void AnimNone::step() {
   }
 }
 
+AnimNone anim_none;
+
 // Wipe
 // Draws a moving white column from left to right, erasing the old time on the right and drawing the new time on the left.
 
@@ -788,6 +811,8 @@ void AnimWipe::step() {
     if( _column==9 ) Serial.printf("anim: wipe - stop (%lu ms)\n",millis()-_start);
   }
 }
+
+AnimWipe anim_wipe;
 
 // Dots
 // One by one remove the pixels of the old time, then one-by one draw the pixels of the new time.
@@ -864,6 +889,8 @@ void AnimDots::step() {
     return;
   }
 }
+
+AnimDots anim_dots;
 
 // Pulse
 // Dim down all old pixels to black, then dim up all pixels to the new color
@@ -949,6 +976,8 @@ void AnimPulse::step() {
   
 }
 
+AnimPulse anim_pulse;
+
 // Mist
 // Draws a moving white column from left to right, erasing the old time on the right and drawing the new time on the left.
 
@@ -1005,7 +1034,7 @@ void AnimMist::step() {
   // Timing
   uint32_t ms= millis();
   if( ms-_ms<ANIMMIST_STEP_MS ) return;
-  _ms=ms;
+  _ms= ms;
   
   switch( _phase ) {
 
@@ -1158,20 +1187,49 @@ void AnimMist::step() {
   }
 }
 
+AnimMist anim_mist;
+
+// Random
+// Picks one of the others
+
+extern Anim * anim_list[COL_ANIMATION_RANDOM+1]; // forward declaration
+
+class AnimRandom: public Anim {
+  public:
+    AnimRandom();
+    void start(palette4_t * p, int h, int m);
+    void step();
+  private:
+    Anim * _anim; // current animation
+};
+
+AnimRandom::AnimRandom() {
+  _anim= 0;
+}
+
+void AnimRandom::start(palette4_t * p, int h, int m) {
+  int ix= random(1,COL_ANIMATION_RANDOM); // "upper bound of the random value, exclusive" so random itself will not be choosen
+  _anim= anim_list[ix]; 
+  _anim->start(p,h,m);
+};
+
+void AnimRandom::step() {
+  if( _anim ) _anim->step();
+}
+
+AnimRandom anim_random;
+
 // Init
 
-// Global object implementing th selected animation
-Anim * anim;
+// Global object implementing the selected animation
+Anim * anim_selected;
 
-// Initializes the animator.
-// Setup what the user configured.
+// List of all animations; index must match COL_ANIMATION_XXX
+Anim * anim_list[COL_ANIMATION_RANDOM+1]= {0, &anim_none, &anim_wipe, &anim_dots, &anim_pulse, &anim_mist, &anim_random}; 
+
+// Initializes the animator. Setup what the user configured.
 void anim_init() {
-  if(      col_animation==COL_ANIMATION_NONE  ) anim= new AnimNone();
-  else if( col_animation==COL_ANIMATION_WIPE  ) anim= new AnimWipe();
-  else if( col_animation==COL_ANIMATION_DOTS  ) anim= new AnimDots();
-  else if( col_animation==COL_ANIMATION_PULSE ) anim= new AnimPulse();
-  else if( col_animation==COL_ANIMATION_MIST  ) anim= new AnimMist();
-  else { anim= new AnimNone(); Serial.printf("anim: unknown animation\n" ); }
+  anim_selected= anim_list[col_animation];
   Serial.printf("anim: init\n" );
 }
 
@@ -1190,7 +1248,7 @@ void setup() {
   cfg.check(60,CFG_BUT_PIN); // Wait 60 flashes (of 50ms) for a change on pin CFG_BUT_PIN
   // if in config mode, do config setup (when config completes, it restarts the device)
   if( cfg.cfgmode() ) { cfg.setup(); return; }
-  Serial.printf("main: No configuration requested, started WordClockFull\n\n");
+  Serial.printf("main: no configuration requested, started WordClockFull\n\n");
 
   neo_init(); 
   but_init();
@@ -1215,7 +1273,15 @@ void loop() {
   but_scan();
 
   // If button pressed, toggle demo mode
-  if( but_wentdown() ) clk_demo_set( !clk_demo_get() );
+  if( but_wentdown() ) { 
+    if( clk_demo_get() ) { // Was in demo mode, switch demo off; also reset animation style
+      clk_demo_set(0);
+      anim_selected= anim_list[col_animation];
+    } else { // Was in normal mode, switch demo on; also select animation style random
+      clk_demo_set(1);
+      anim_selected= anim_list[COL_ANIMATION_RANDOM];
+    }
+  }
   
   // Get the current time
   char buf[32];
@@ -1230,7 +1296,7 @@ void loop() {
       if( col_refresh==COL_REFRESH_FIVE ) refresh|= (curmin%5==0) && (curmin!=prevmin);
       if( refresh ) {
         palette4_t * palette= col_next();
-        anim->start(palette,curhour%12,curmin);
+        anim_selected->start(palette,curhour%12,curmin);
       }
     } else {
       Serial.printf("[no NTP sync yet]"); 
@@ -1240,5 +1306,5 @@ void loop() {
   }
 
   // Run any pending animation
-  anim->step();
+  anim_selected->step();
 }
