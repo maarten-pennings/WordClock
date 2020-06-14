@@ -33,6 +33,7 @@ This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSw
  - [12. Model 5](#12-Model-5) - Adding the time keeping software
  - [13. Model 6](#13-Model-6) - End-user application "WordClockFull"
  - [14. User manual](#14-User-manual) - The user manual of "WordClockFull"
+ - [15. Replication](#15-Replication) - Making one more
 
 Notes
  - There are several [Arduino sketches](sketches) used during development.
@@ -916,11 +917,24 @@ Secondly, I made changes to the schematic. I got rid of the level shifter, and I
 
 ![New schematic](imgs/schematic2.png)
 
-I also made the "Wing PCB" a little bit bigger
+I also made the "Wing PCB" a little bit bigger.
 
 ![Wing PCB](imgs/wingpcb.png)
 
-I made one more change, but that was a big mistake.
-I 3D printed in white.
+
+In the photo below, you see the wing PCB in its casing.
+Note that the button is on the bottom side of the wing PCB.
+
+![Wing PCB](imgs/wingpcb.jpg)
+
+The above photo shows another change: I made the case wide.
+That is a mistake. The white PLA clearly does not isolate the
+light. We suffer from bleed.
+
+![Front bleed](imgs/bleed1.jpg)
+
+This is also very clear from the top.
+
+![Top bleed](imgs/bleed2.jpg)
 
 (end)
