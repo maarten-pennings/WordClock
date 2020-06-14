@@ -904,4 +904,23 @@ The "[mist](https://youtu.be/u285F07go_c)" animation covers the old time be addi
 Finally, the animation "random" randmly choses one of none, wipe, dots, pulse or mist.
 
 
+## 15. Replication
+
+I made one extra, for Marc. I made some changes.
+
+Firstly, I got a 6V capacitor, which is much smaller than the 35V one I used before, although it has the same capacity (1000 µF). I attached the capacitor to the neopixel board instead of to the ESP board.
+
+![New Neopixel board](imgs/neopixelcap.jpg)
+
+Secondly, I made changes to the schematic. I got rid of the level shifter, and I added a pull-up to the D3 button. The reason for the pull-up is that the first version does not always pick-up button presses for configuration.
+
+![New schematic](imgs/schematic2.png)
+
+I also made the "Wing PCB" a little bit bigger
+
+![Wing PCB](imgs/wingpcb.png)
+
+I made one more change, but that was a big mistake.
+I 3D printed in white.
+
 (end)
