@@ -921,13 +921,12 @@ I also made the "Wing PCB" a little bit bigger.
 
 ![Wing PCB](imgs/wingpcb.png)
 
-
 In the photo below, you see the wing PCB in its casing.
 Note that the button is on the bottom side of the wing PCB.
 
 ![Wing PCB](imgs/wingpcb.jpg)
 
-The above photo shows another change: I made the case wide.
+The above photo shows another change: I made the case white.
 That is a mistake. The white PLA clearly does not isolate the
 light. We suffer from bleed.
 
@@ -936,5 +935,7 @@ light. We suffer from bleed.
 This is also very clear from the top.
 
 ![Top bleed](imgs/bleed2.jpg)
+
+Hmm, guess I have to print in the old color.
 
 (end)
