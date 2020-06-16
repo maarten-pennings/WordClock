@@ -36,7 +36,7 @@ This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSw
  - [15. Replication](#15-Replication) - Making one more
 
 Notes
- - There are several [Arduino sketches](sketches) used during development.
+ - There are several [Arduino sketches](sketches/README.md) used during development.
  - There are some [Python scripts](scripts) used during development.
 
 
