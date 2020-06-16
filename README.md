@@ -429,7 +429,7 @@ We are going to use an ESP8266 for the WordClock. ESP8266s are easily and cheapl
 That allows us to use NTP (time syncing) which makes them well suited for maintaining time for our clock.
 
 The ESP8266 runs on 3V3, but typically comes on boards that are powerd via USB (and thus 5V).
-These boards have a voltage regulator that converts 5V to 3V3. The boards also have a VIN that 
+These boards have a voltage regulator (LDO) that converts 5V to 3V3. The boards also have a VIN that 
 connects to the regulator. This allows us to use an external power supply (6V-12V) instead of 
 power over USB.
 
