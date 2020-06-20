@@ -936,6 +936,12 @@ This is also very clear from the top.
 
 ![Top bleed](imgs/bleed2.jpg)
 
+I painted the inner walls that separate the LEDs with black paint.
+It does help a bit.
+
+![After painting](imgs/bleed3.jpg)
+
+
 Hmm, guess I have to print in the old color.
 
 (end)
