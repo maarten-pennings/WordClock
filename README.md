@@ -147,7 +147,7 @@ This NeoPixel matrix is big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
 transparent diffuser (also _inside_ the letters). This should prevent bleed.
 
-![Side view](WordClockBleed.png)
+![Side view](imgs/WordClockBleed.png)
 
 The [design](https://a360.co/2R9Nksa) is made in Fusion 360.
 I was quite pleased with the result. The print resolution is sufficient to print the letters. 
