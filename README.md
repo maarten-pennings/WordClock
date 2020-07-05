@@ -8,11 +8,12 @@ Commercial [products](https://qlocktwo.com/) exist, but I'm making my own.
 There is a [video](https://youtu.be/0UkmPO7tGsg) looking at the mechanics (casing) of the WordClock,
 and a [video](https://youtu.be/4AUioVwlsqg) comparing it to a DCF77 clock.
 
-Here are some demos of animations 
+Here is a demo [video](https://youtu.be/8YMuuo80cz0) of all animations,
+or look at just
 [none](https://youtu.be/OCgUQ6qWnN4),
 [wipe](https://youtu.be/U9yd8xaslh4),
 [dots](https://youtu.be/AXKME2LGA_A),
-[pulse](https://youtu.be/F0VIralrmUM), and
+[pulse](https://youtu.be/F0VIralrmUM), or
 [mist](https://youtu.be/u285F07go_c).
 
 This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSwM-FqwnLM_yhguJa) of all WordClock videos.
@@ -663,7 +664,9 @@ Notes on the output
 The hardware is done, the clock is running.
 The final step is to add software features.
 The application [WordClockFull](sketches/WordClockFull) is the end-user application.
-It contains the following features
+That directory also contains a complete binary [release](sketches/WordClockFull/release/readme.md).
+
+WordClockFull contains the following features
 
  - Color modes  
    The colors used for the hours and minutes can be configured.
