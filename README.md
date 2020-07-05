@@ -574,7 +574,7 @@ Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case - back and f
 Here is a [video](https://youtu.be/4AUioVwlsqg) with the clock running, comparing it to a DCF77 clock.
 
 Some notes on the video
- - The blue LED at the back switches on the clock is powered (and initialized).
+ - The blue LED at the back switches on when the clock is powered and initialized.
  - The blue LED switches off as soon as an NTP sync has occurred, i.e. when the local time is known.
  - The time is then displayed in 5 min resolution.
  - At 10:52:30 (see the DCF77 clock) the WordClock switches from 10:50 (TIEN-VOOR-ELF) to 10:55 (VIJF-VOOR-ELF).
@@ -664,7 +664,7 @@ Notes on the output
 The hardware is done, the clock is running.
 The final step is to add software features.
 The application [WordClockFull](sketches/WordClockFull) is the end-user application.
-That directory also contains a complete binary [release](sketches/WordClockFull/release/readme.md).
+That directory also contains a complete binary [release](sketches/WordClockFull/release).
 
 WordClockFull contains the following features
 
@@ -727,7 +727,7 @@ The power usage can be estimated as follows, see also the section on [power](#9-
 Let's assume the display shows 17 characters (TIEN VOOR HALF NEGEN), 
 each in a primary color (red, green, blue), and each at 20%.
 This comes close to the default configuration.
-Recall that a 100% powered LED consumes 13mA, the 64 NeoPixels have standby current of 32mA and the ESP8266 NodeMCU
+Recall that a 100% / LED consumes 13mA, the 64 NeoPixels have standby current of 32mA and the ESP8266 NodeMCU
 uses 80mA. This results in an operating current of 20% × 13 × 17 + 32 + 80 ≈ 156 mA.
 This is well within standard USB specification, which says 500mA max.
 
@@ -806,6 +806,7 @@ The libraries need to be stored in the Arduino library directory
 itself can be stored anywhere, but most people store it in the Arduino directory
 (thus `C:\Users\Maarten\Documents\Arduino\` for me).
 
+As an alternative to building the binary yourself, there is also a complete binary [release](sketches/WordClockFull/release).
 
 ### Normal operation
 
