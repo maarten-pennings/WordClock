@@ -951,4 +951,10 @@ It does help a bit.
 
 Hmm, guess I have to print in the old color.
 
+## todo
+
+- add `settimeofday_cb` to WordClockFull to see in log when NTP is synced
+- add cfg option for pulsating seconds
+- add animation **slide** (letters out of view)
+
 (end)
