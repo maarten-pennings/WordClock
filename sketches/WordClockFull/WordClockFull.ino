@@ -1,6 +1,7 @@
 // WordClockFull.ino - A wordClock using NeoPixels, keeping time via NTP, with dynamic configuration, color
-#define VERSION "6"
+#define VERSION "7"
 
+#include <coredecls.h> // Only needed for settimeofday_cb()
 #include <time.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WiFiMulti.h>
@@ -390,7 +391,7 @@ void led_init() {
 
 void wifi_sethostname(int len=WL_MAC_ADDR_LENGTH) {
   const char prefix[]= "WordClock-";
-  char hname[3*WL_MAC_ADDR_LENGTH+1+sizeof(prefix)];
+  char hname[sizeof(prefix)+2*WL_MAC_ADDR_LENGTH]; // sizeof(prefix) includes terminating 0
   char * p= (char*)&hname;
   for( const char * q=prefix; *q!=0; ) *p++= *q++;
   uint8_t macbuf[WL_MAC_ADDR_LENGTH];
@@ -491,6 +492,9 @@ void clk_init() {
   configTime( cfg.getval("Timezone"), cfg.getval("NTP.server.1"), cfg.getval("NTP.server.2"), cfg.getval("NTP.server.3"));
   Serial.printf("clk : init: %s %s %s\n", cfg.getval("NTP.server.1"), cfg.getval("NTP.server.2"), cfg.getval("NTP.server.3"));
   Serial.printf("clk : timezones: %s\n", cfg.getval("Timezone") );
+
+  // Track when time is actually set
+  settimeofday_cb( [](){Serial.printf("clk : NTP sync\n");} );  // Pass lambda function to print SET when time is set
 
   // Disable demo
   clk_demo_mode= 0;
