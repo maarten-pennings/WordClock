@@ -16,6 +16,8 @@ or look at just
 [pulse](https://youtu.be/F0VIralrmUM), or
 [mist](https://youtu.be/u285F07go_c).
 
+I also made a [white](https://youtu.be/0g2qCgmOJZo) version.
+
 This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSwM-FqwnLM_yhguJa) of all WordClock videos.
 
 ## Table of contents
