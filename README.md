@@ -49,8 +49,10 @@ Notes
 I had seen WordClocks before, e.g. [here](https://www.instructables.com/id/My-Arduino-WordClock/).
 However, doing the mechanics for 100 LEDs, isolating them (light bleed), wiring them - too much work.
 
+![8x8 LED matrix](LedMatrix8x8MAX7219.jpg)
+
 Then I stumbled on a simpler [version](http://www.espruino.com/Tiny+Word+Clock).
-It uses an 8×8 LED matrix, so very little mechanics to do.
+It uses an 8×8 LED matrix (and a MAX7219 controller), so very little mechanics to do.
 The downside is that 8×8 LEDs means we are very restricted on the _lettering_: 
 which letters (words) are placed where and how.
 
