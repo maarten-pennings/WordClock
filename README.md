@@ -200,6 +200,27 @@ Conclusions:
  - A 8×8 at full white will likely consume 64×3×12.9 + 64×0.5 = 2509 mA or 2.5 A.
 
 
+For the final product, the power usage can be estimated as follows..
+Let's assume the display shows 17 characters (TIEN VOOR HALF NEGEN), 
+each in a primary color (red, green, blue), and each at 20%.
+This comes close to the default configuration.
+Recall that a 100% / LED consumes 13mA, the 64 NeoPixels have standby current of 32mA and the ESP8266 NodeMCU
+uses 80mA. This results in an operating current of 20% × 13 × 17 + 32 + 80 ≈ 156 mA.
+This is well within standard USB specification, which says 500mA max.
+
+The mist animation switches nearly all pixels on, to gray.
+The default mist color is 0x222222, which means 0x22 or 34 per color channel. This is 34/255 or 13% of full power.
+During mist, the pixels vary from 13% to 0%,so let's estimate 7% average for 50 pixels for all three LEDs (gray).
+This means the power estimate is 7% × 13 × 50 × 3 + 32 + 80 ≈ 250 mA.
+Still half of the max USB spec (500mA).
+
+This figures match quite well with actuals. We measure 148 where we estimated 156, and we measure 247 where we estimated 250.
+
+![Time](imgs/power-act1.jpg)  ![Animation](imgs/power-act2.jpg)
+
+
+
+
 
 ## 6. Model 3
 
@@ -724,24 +745,9 @@ When running the clock app, pressing the button toggles between normal clock mod
 
 Finally the USB connector has dual use.
 Its main use is power supply to the WordClock.
-
-The power usage can be estimated as follows, see also the section on [power](#9-Power-architecture).
-Let's assume the display shows 17 characters (TIEN VOOR HALF NEGEN), 
-each in a primary color (red, green, blue), and each at 20%.
-This comes close to the default configuration.
-Recall that a 100% / LED consumes 13mA, the 64 NeoPixels have standby current of 32mA and the ESP8266 NodeMCU
-uses 80mA. This results in an operating current of 20% × 13 × 17 + 32 + 80 ≈ 156 mA.
-This is well within standard USB specification, which says 500mA max.
-
-The mist animation switches nearly all pixels on, to gray.
-The default mist color is 0x222222, which means 0x22 or 34 per color channel. This is 34/255 or 13% of full power.
-During mist, the pixels vary from 13% to 0%,so let's estimate 7% average for 50 pixels for all three LEDs (gray).
-This means the power estimate is 7% × 13 × 50 × 3 + 32 + 80 ≈ 250 mA.
-Still half of the max USB spec (500mA).
-
-This figures match quite well with actuals. We measure 148 where we estimated 156, and we measure 247 where we estimated 250.
-
-![Time](imgs/power-act1.jpg)  ![Animation](imgs/power-act2.jpg)
+For normal usage standard 500mA USB is more than sufficient.
+If you want all LEDs full bright white, you would need 2500mA.
+The power usage can be estimated, see section on [power](#5-NeoPixel-power).
 
 The second use of the USB connector is software development.
 When the USB connector is connected to a PC, and a CH340 USB to serial driver is installed, 
