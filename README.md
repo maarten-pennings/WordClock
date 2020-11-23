@@ -808,6 +808,7 @@ Download and install [Arduino IDE](https://www.arduino.cc/en/Main/Software) and 
 [ESP8266 compiler and libraries](https://www.instructables.com/id/Quick-Start-to-Nodemcu-ESP8266-on-Arduino-IDE/).
 
 Download the [WordClockFull](sketches/WordClockFull).
+It does need the Adafruit NeoPixel library, that you find in the Arduino Library manager.
 It does need the configuration library [Cfg](https://github.com/maarten-pennings/Cfg)
 and the persistent storage library [Nvm](https://github.com/maarten-pennings/Nvm)
 
@@ -817,10 +818,11 @@ itself can be stored anywhere, but most people store it in the Arduino directory
 (thus `C:\Users\Maarten\Documents\Arduino\` for me).
 
 As an alternative to building the binary yourself, there is also a complete binary [release](sketches/WordClockFull/release).
+You still need to flash that.
 
 ### Normal operation
 
-When the WordClock is powered it should start with a blank display.
+When the WordClock is powered it should start with a blank (dark) display.
 Sometimes it powers with the display showing the last time (this is due to the large internal capacitor
 which causes the NeoPixel display to retain state). But the firmware will immediately switch off the display.
 
