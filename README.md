@@ -41,6 +41,7 @@ This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSw
 Notes
  - There are several [Arduino sketches](sketches/README.md) used during development.
  - There are some [Python scripts](scripts) used during development.
+ - There are [STL](stls) files for 3D printing.
 
 
 
