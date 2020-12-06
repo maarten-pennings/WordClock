@@ -154,7 +154,7 @@ transparent diffuser (also _inside_ the letters). This should prevent bleed.
 
 ![Side view](imgs/WordClockBleed.png)
 
-The [design](https://a360.co/2R9Nksa) is made in Fusion 360.
+The [design](stls) is made in Fusion 360.
 I was quite pleased with the result. The print resolution is sufficient to print the letters. 
 And the transparency is enough to see through.
 
@@ -236,7 +236,7 @@ Unfortunately, the resistors are not centered.
 Also the matrix is not equal in horizontal and vertical direction: 
 in horizontal direction the spacing is ~8.1mm and in vertical direction the spacing is ~8.3mm.
 Result: the 3D print does not fit well.
-I needed to make a new [3D model](https://a360.co/2RQO6uB).
+I needed to make a new [3D model](stls).
 
 See below for the wiring; the resistor is 470 Ω, the capacitor 1000 µF 
 (see [Adafruit](https://learn.adafruit.com/adafruit-neopixel-uberguide/basic-connections)).
@@ -563,7 +563,7 @@ expansion boards, is shown in the photo below.
 ![The board](imgs/board.jpg)
 
 Next step is to fit this board in a 3D printed case. Of course, we already had the
-[front side](#3d-printing), but I still needed to make the [back side](https://a360.co/2P95Akd).
+[front side](#3d-printing), but I still needed to make the [back side](stls).
 In the figure below, we see the main board screwed to the back side (left). On the
 right, the NeoPixel board is plugged into the board.
 
