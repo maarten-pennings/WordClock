@@ -542,7 +542,7 @@ wire as described in [modding](#modding-the-board).
 Some notes, added after the project was finished.
  - The breadboard version suggests that the level shifter is not needed at all.
  - With the level shifter, it is working fine. But the claim "playig safe" is naive; the level shifter spec 
-   suggests it can _not_ keep up with the signalling speed (800kHz).
+   suggests it can _not_ keep up with the signaling speed (800kHz).
  - I have found another [level shifting trick](https://twitter.com/strooom/status/1107028243822141440). 
    Did not try [it](imgs/3v3-5v0-schem.png) out myself, but a quick [measurement](imgs/3v3-5v0-scope.png) seems to validat it.
 
@@ -595,7 +595,7 @@ I decided to make a "simple" version first.
 No (dynamic) configuration, no animations.
 Find this sketch in [WordClockSimple](sketches/WordClockSimple).
 
-Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case - back and front - and the signalling LED.
+Here is a [video](https://youtu.be/0UkmPO7tGsg) looking at the case - back and front - and the status LED.
 
 Here is a [video](https://youtu.be/4AUioVwlsqg) with the clock running, comparing it to a DCF77 clock.
 
@@ -733,17 +733,16 @@ They form words that tell the time.
 This clock is made for the Dutch language.
 
 At the back side there are three user parts.
-There is the signaling LED, a user button and a micro USB connector.
+There is the status LED, a user button and a micro USB connector.
 
 ![User parts](imgs/mechanics.jpg)
 
-The signaling LED has two functions, described in more detail in the software chapter.
-Firstly, at startup, it blinks rapidly to signal that the user can press the button to enter configuration mode.
-When running the clock app, the signaling LED should be off (indicating WiFi connected and thus correct time).
-When the signaling LED is on this indicates that the WordClock is searching for a WiFi net to connect to.
+The status LED has multiple functions, described in more detail in the "Normal operation" section below.
+It blinks rapidly to signal that the user can press the button to enter configuration mode.
+In configuration mode it blinks slowly. In normal mode it is on when searching for WiFi or off when WiFi is connected.
 
 The button also has two functions.
-Firstly, at startup, when the signaling LED is blinking, a press on the button enters configuration mode.
+Firstly, at startup, when the status LED is blinking, a press on the button enters configuration mode.
 When running the clock app, pressing the button toggles between normal clock mode and demo mode (15× speed).
 
 Finally the USB connector has dual use.
@@ -754,7 +753,7 @@ The power usage can be estimated, see section on [power](#5-NeoPixel-power).
 
 The second use of the USB connector is software development.
 When the USB connector is connected to a PC, and a CH340 USB to serial driver is installed, 
-and you have a terminal program (115200/8/N/1) we can have a look at the WordClock log.
+and you have a terminal program (115200/8/N/1), the WordClock log can be examined.
 You get something like this
 
 ```
@@ -798,11 +797,16 @@ clk : 2020-03-15 20:31:24 (dst=0) 20:33
 clk : 2020-03-15 20:31:25 (dst=0) 20:33                                         
 ```    
 
-Maybe more important, the USB connector can be used to upgrade the firmware.
+Maybe more importantly, the USB connector can be used to upgrade the firmware.
 
 ### Install firmware
 
-This section is deliberately short. There are plenty of sites explaining how to install Arduino apps, 
+There is a complete binary [release](sketches/WordClockFull/release) that you can flash yourself.
+A PC program to flash is provided.
+
+As an alternative you can build the binary yourself.
+
+There are plenty of sites explaining how to install Arduino apps, 
 even from [myself ](https://github.com/maarten-pennings).
 
 Download and install [Arduino IDE](https://www.arduino.cc/en/Main/Software) and then the 
@@ -818,8 +822,6 @@ The libraries need to be stored in the Arduino library directory
 itself can be stored anywhere, but most people store it in the Arduino directory
 (thus `C:\Users\Maarten\Documents\Arduino\` for me).
 
-As an alternative to building the binary yourself, there is also a complete binary [release](sketches/WordClockFull/release).
-You still need to flash that.
 
 ### Normal operation
 
@@ -828,19 +830,19 @@ Sometimes it powers with the display showing the last time (this is due to the l
 which causes the NeoPixel display to retain state). But the firmware will immediately switch off the display.
 
 After power up, the WordClock first gives the user the option to enter configuration mode.
-Entering configuration mode is achieved by pressing the button at the back while the signaling LED at the back is blinking.
-If the button is not pressed during the blinking (which takes about one second), the WordClock app starts.
+Entering configuration mode is achieved by pressing the button at the back while the status LED at the back is blinking rapidly.
+If the button is not pressed during the rapid blinking (which takes about one second), the WordClock app starts.
 We will describe that first. Configuration mode is described [below](#configuration).
 
-The WordClock app starts with the signaling LED steadily on. This indicates the WordClock has no WiFi connection (yet).
+The WordClock app starts with the status LED steadily on. This indicates the WordClock has no WiFi connection (yet).
 The first step of the WordClock app is a NeoPixel test: all red LEDs are turned on one-by-one, then all green LEDs and finally
 all blue LEDs. 
 
 After the NeoPixel test finishes, the display blanks. The display stays blank until time is known.
-For this, the WordClock needs to connect to WiFi. Once that is successful, the signaling LED switches off (normal state).
+For this, the WordClock needs to connect to WiFi. Once that is successful, the status LED switches off (normal state).
 Next step is to sync with NTP services. If that is successful, WordClock knows time, and shows that on the display.
 
-If later, the WiFi connection is lost, the signaling LED switches on again (until the next WiFi connect).
+If later, the WiFi connection is lost, the status LED switches on again (until the next WiFi connect).
 When there is no WiFi, there is no NTP sync. But if time has been synced once, the internal processor
 keeps track of time itself (with a drift of ±1s per day). NTP syncs occur once per hour (if WiFi is connected).
 
@@ -849,17 +851,17 @@ In demo mode, time runs at 15× speed. This shows off the animations.
 Demo mode starts with current time, but quickly deviates because it runs faster.
 When the button is pressed again, demo mode is off, and the clock shows the real time again.
 
-When the WordClock is correctly configured, it will also switch to daylight saving time 
-and back to standard time at the correct moment.
+When the WordClock is correctly configured (the `Timezone` field in the configuration), 
+it will also switch to daylight saving time and back to standard time at the correct moment.
 
 Note that the WordClock app logs all steps over the UART connection, which is available over USB.
 
 
 ### Configuration
 
-When the user presses the back button at power up (with the signaling LED blinking fast) the WordClock enters configuration mode.
+When the user presses the back button at power up (with the status LED blinking rapidly) the WordClock enters configuration mode.
 In configuration mode, the WordClock starts a WiFi Access Point, a DNS server, DHCP server and a web server.
-Once the web server is running, the signaling LED will blink slowly (1Hz) showing configuration mode is active.
+Once the web server is running, the status LED will blink slowly (1Hz) showing configuration mode is active.
 
 Connect your laptop or smart phone to this Access Point.
 The SSID starts with WordClock, and is followed by a part of its MAC address.
@@ -883,7 +885,7 @@ The settings will be saved persistently, and the WordClock restart.
 The first section is **Access Points**.  
 Here you can enter up to three access points; the SSID (`Ssid.1`, `Ssid.2`, and `Ssid.3`) and 
 the associated passwords  (`Password.1`, `Password.2`, and `Password.3`) .
-I typically enter home, work, and the tethering AP of my phone.
+I typically enter home, work, and the tethering Access Point of my mobile phone.
 If you have fewer than three, just leave them blank.
  
 The next section is **Time management**.  
@@ -912,17 +914,17 @@ This section determines the animations.
 either every minute ("one") or every five minutes ("five"). Note that only every five minutes the 
 time reading actually changes (since the clock display resolution is 5 minutes).
 So selecting "one" makes no sense when mapping is "fix" and animation is "none", but when mapping
-is not "fix" or animation is not "none" there is a color change an/or animation every minute.
+is not "fix" or animation is not "none" there is a color change and/or animation every minute.
 `Mapping` determines the colors used for the words. "fix" uses the colors as defined in the color palette section.  
 The "cycle" mapping also uses the colors, but every refresh the colors are cycled.
 Finally, the "random" mapping generates random colors for the words (never duplicates, never black).  
 The `Animation` setting determines the animation for every refresh.
 The "[none](https://youtu.be/OCgUQ6qWnN4)" animation instantly removes the old time and adds the new time.
-The "[wipe](https://youtu.be/U9yd8xaslh4)" animation moves a column (in `Color.a`) from left to right erasing the old time before it and adding the new time behind it.
-The "[dots](https://youtu.be/AXKME2LGA_A)" removes the old time one pixel at a time, then adds the new time one at a time.
+The "[wipe](https://youtu.be/U9yd8xaslh4)" animation moves a column (in `Color.a`) from left to right erasing the old time in front of it and adding the new time behind it.
+The "[dots](https://youtu.be/AXKME2LGA_A)" removes the old time one pixel at a time, then adds the new time one pixel at a time.
 The "[pulse](https://youtu.be/F0VIralrmUM)" animation dims the old time down, then dims the new time up.
 The "[mist](https://youtu.be/u285F07go_c)" animation covers the old time be adding mist pixels (`Color.a`), then uncovers the new time by removing mist pixels.
-Finally, the animation "random" randmly choses one of none, wipe, dots, pulse or mist.
+Finally, the animation "random" randomly chooses one of none, wipe, dots, pulse or mist.
 
 
 ## 15. Replication
