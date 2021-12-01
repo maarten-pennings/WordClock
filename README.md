@@ -1022,7 +1022,27 @@ and the blue value to _3×i_. In other words, NeoPixel 64 will be configured to 
    This would means that the activation of the first and last NeoPixels is ~2000µs apart.
  - It _could_ also be that a NeoPixel is only activated (from latch to the RGB led drivers) when the RET code is detected (a silent perod of 50 µs). 
    This would mean that the activation of the first and last NeoPixels is only 9.13µs apart.
- - I do not yet know how to measure the activation moment.
+
+In an attempt to determine the activation moment, I've changed the setup a bit.
+I added a third probe, an analogue measurement of Vcc.
+Secondly, the Arduino script is changed: all pixels are set to full brightness `pixels.setPixelColor(i,0xffffff)`.
+Thirdly, I power the board now via a powered USB hub.
+
+The idea is that setting all NeoPixels from off to maximum causes a drop in voltage 
+(due to power suddenly going from 100mA to 2500mA). The question being: is this voltage drop 
+gradual during the configuration, or abrupt when the RET signal comes in.
+
+![NeoPixel activation](imgs/neoactivate.png)
+
+The above capture shows a rather constant voltage of 4V before sending the pulses.
+When all pulses are send, at 2ms after T=0 (green arrow in left image), the voltage drops to 3V.
+This seems to support the hypothesis that NeoPixels are activated when the RET code is received.
+
+Especially, because if we zoom in on the green arrow (right image), we see a plateau 
+at the original 4V that has a width of about T_RET (50us). This seems to indicate that
+T_RET us after the end of configuration, the LEDs are switched full on and the voltage starts to drop.
+
+
 
 ## Todo
 
