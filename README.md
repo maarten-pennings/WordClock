@@ -983,9 +983,9 @@ Hmm, guess I have to print in the old color.
 ## 16. Delay
 
 As a follow-up to the NeoPixel timing experiments in [8. Timing](#8-Timing) I did a final experiment.
-The goal is to delay caused by the daisy chain.
+The goal is to determine the delay caused by the daisy chain of NeoPixels.
 
-I took the final NeoPixel board with 64 NeoPixels.
+I took the "production" NeoPixel board with 64 NeoPixels.
 I put a probe of a logic analyzer on the data-in pin of the board, which is the data-in of NeoPixel 0.
 I put a second probe on the data-out pin of the board, which is the data-out of NeoPixel 63 - or data-in of the non-existing NeoPixel 64.
 
@@ -1001,26 +1001,30 @@ on the board, the data-out pin of the board will show the data send to this non-
 
 Note that the loop sets the red value of NeoPixel _i_ to the value _i_, the green value to _2×i_,
 and the blue value to _3×i_. In other words, NeoPixel 64 will be configured to R=64, G=128, B=192.
+The call to `pixels.show()` we start transmitting the 3×8×65 pulses to the board.
 
 ![NeoPixel delay](imgs/neodelay.png)
 
  - The top of the picture shows a trace of the two signals:
    the signal on _board data-in_ (NewPixel 0 data-in) and the signal on _board data-out_ (NeoPixel 63 data-out, NeoPixel 64 data-in).
  - Sending the RGB data to the board takes, as before ~2ms (the wide gray rectangle in the top trace). 
- - All the 3×8×64 pulses pass NeoPixel 0, but NeoPixel 64 only sees the remaining 3×8×1 pulses for itself
+ - All the 3×8×65 pulses pass NeoPixel 0, but NeoPixel 64 only sees the remaining 3×8×1 pulses for itself
    (the small gray rectangle in the top trace). 
  - The bottom of the picture shows the same trace, but zoomed in (as indicated in yellow) on the end of the trace.
  - NeoPixel 64 will be configured to G=128, R=64, B=192; 
    we see those pulses pass as the last ones on data-in of NeoPixel 0.
- - This does mean that the daisy-chained NeoPixels are not one big shift register: the data of NeoPixel 64 is not shifted-in as first, but as last.
- - This is confirmed by the [WS2812B datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf):
-   _the first pixel collect initial 24bit data then sent to the internal data latch, the other data [...] sent to the next cascade pixel_.
- - The pulse are passed on by NeoPixel 0 to NeoPixel 1, which passes it on to 2, etc, until they arrive on the data-in of NeoPixel 64.
- - We see that the chain of 64 NeoPixels causes a delay of 9.13µs (cyan rectangle).
- - I suspect that a NeoPixel is "activated" - starts illuminating using its new settings - once the data 
+   This does mean that the daisy-chained NeoPixels are not one big shift register: 
+   the data for NeoPixel 64 is not shifted-in as first, but as last.
+   This is confirmed by the [WS2812B datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf):
+   _"the first pixel collect initial 24bit data then sent to the internal data latch, 
+   the other data [...] sent to the next cascade pixel"_.
+ - The pulses are passed on by NeoPixel 0 to NeoPixel 1, which passes it on to 2, etc, until they arrive on the data-in of NeoPixel 64.
+ - We see that the chain of 64 NeoPixels causes a delay of 9.13µs (cyan rectangle for marker pair A1-A2).
+ - It _could_ be that a NeoPixel is "activated" - starts illuminating using its new settings - once the data 
    is in "the internal data latch" as the datasheet mentions.
-   This would means that the activation of the first and last NeoPixels is ~2000µs apart.
- - It _could_ also be that a NeoPixel is only activated (from latch to the RGB led drivers) when the RET code is detected (a silent perod of 50 µs). 
+   This would mean that the activation of the first and last NeoPixels is ~2000µs apart.
+ - It _could_ also be that a NeoPixel is only activated (settings copied from latch to the RGB led drivers) 
+   when the RET code is detected (a silent period of 50 µs). 
    This would mean that the activation of the first and last NeoPixels is only 9.13µs apart.
 
 In an attempt to determine the activation moment, I've changed the setup a bit.
@@ -1035,7 +1039,7 @@ gradual during the configuration, or abrupt when the RET signal comes in.
 ![NeoPixel activation](imgs/neoactivate.png)
 
 The above capture shows a rather constant voltage of 4V4 before sending the pulses.
-When all pulses are send, at 2ms after T=0 (green arrow in left image), the voltage drops to 3V3.
+When all pulses are send, at 2ms after T=0 (green arrow in left image), the voltage gradually drops to 3V3.
 This seems to support the hypothesis that NeoPixels are activated when the RET code is received.
 
 Especially, because if we zoom in on the green arrow (right image), we see a plateau 
