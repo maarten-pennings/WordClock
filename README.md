@@ -993,12 +993,12 @@ I put a second probe on the data-out pin of the board, which is the data-out of 
   #define NUMPIXELS      65
   for( int i=0; i<NUMPIXELS; i++ ) pixels.setPixelColor(i, i*0x010203 );
   pixels.show();
-}
 ```
 
 I wrote the above small test loop. 
-It configures _65_ pixels. Since this is one more pixel than is present 
+It configures _65_ pixels (numbered 0 up to and including 64). Since this is one more pixel than is present 
 on the board, the data-out pin of the board will show the data send to this non-existing NeoPixel 64.
+
 Note that the loop sets the red value of NeoPixel _i_ to the value _i_, the green value to _2×i_,
 and the blue value to _3×i_. In other words, NeoPixel 64 will be configured to R=64, G=128, B=192.
 
@@ -1007,14 +1007,14 @@ and the blue value to _3×i_. In other words, NeoPixel 64 will be configured to 
  - The top of the picture shows a trace of the two signals:
    the signal on _board data-in_ (NewPixel 0 data-in) and the signal on _board data-out_ (NeoPixel 63 data-out, NeoPixel 64 data-in).
  - Sending the RGB data to the board takes, as before ~2ms (the wide gray rectangle in the top trace). 
- - All the 3×8×64 pulses pass NeoPixel 0, but NeoPixel 64 only sees the remaining 3×8×1 pulses for itself.
+ - All the 3×8×64 pulses pass NeoPixel 0, but NeoPixel 64 only sees the remaining 3×8×1 pulses for itself
    (the small gray rectangle in the top trace). 
  - The bottom of the picture shows the same trace, but zoomed in (as indicated in yellow) on the end of the trace.
- - NeoPixel 64 will be configured to G=128=0b1000000, R=64=0b0100000, B=192=0b11000000; 
+ - NeoPixel 64 will be configured to G=128, R=64, B=192; 
    we see those pulses pass as the last ones on data-in of NeoPixel 0.
  - This does mean that the daisy-chained NeoPixels are not one big shift register: the data of NeoPixel 64 is not shifted-in as first, but as last.
  - This is confirmed by the [WS2812B datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf):
-   _the first pixel collect initial 24bit data then sent to the internal data latch, the other data [...] sent to the next cascade pixel_
+   _the first pixel collect initial 24bit data then sent to the internal data latch, the other data [...] sent to the next cascade pixel_.
  - The pulse are passed on by NeoPixel 0 to NeoPixel 1, which passes it on to 2, etc, until they arrive on the data-in of NeoPixel 64.
  - We see that the chain of 64 NeoPixels causes a delay of 9.13µs (cyan rectangle).
  - I suspect that a NeoPixel is "activated" - starts illuminating using its new settings - once the data 
