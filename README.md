@@ -37,6 +37,7 @@ This is the [playlist](https://www.youtube.com/playlist?list=PLrlJSwck1Q0i3ywVSw
  - [13. Model 6](#13-Model-6) - End-user application "WordClockFull"
  - [14. User manual](#14-User-manual) - The user manual of "WordClockFull"
  - [15. Replication](#15-Replication) - Making one more
+ - [16. Delay](#16-Delay) - Determining the timing between first and last NeoPixel
 
 Notes
  - There are several [Arduino sketches](sketches/README.md) used during development.
@@ -141,7 +142,7 @@ The good thing of the [8×8 LED matrix](https://www.aliexpress.com/item/32681183
 The downside of the 8×8 LED matrix, is that the 8×8 matrix is small, in my case 32×32 mm².
 
 However, there are also [8×8 NeoPixel boards](https://www.aliexpress.com/item/32671025605.html).
-Twice as big (65×65 mm²), fully assembled and still affordable.
+Twice as big (65×65 mm²), fully assembled and still affordable (~3 euro/dollar).
 On top of that: the LEDs are full RGB and only a single wire to control all LEDs.
 
 Note that most new NeoPixel boards use the WS2812B. This is a 4 pin device. 
@@ -149,9 +150,13 @@ Its predecessor is known as WS2812 (without the B). This is a 6 pin device.
 
 ![WS2812 and WS2812B](imgs/ws2812-ws2812b.png)
 
-This NeoPixel matrix is big enough to allow the clock to be 3D printed.
+The 4 pin devices are easy to control: 2 pins for power (VCC, GND), 
+one pin to clock in the 24 bits RGB values (data-in),
+and one pin to clock out RGB data, which allows NeoPixels to be daisy-chained.
+
+The 8×8 NeoPixel matrix is big enough to allow the clock to be 3D printed.
 I used a printer with two heads. The first head prints the black encasing, the second head prints a 
-transparent diffuser (also _inside_ the letters). This should prevent bleed.
+transparent diffuser (also _inside_ the letters). This should prevent light bleed.
 
 ![Side view](imgs/WordClockBleed.png)
 
@@ -175,6 +180,13 @@ It is helpful to understand the inner workings of a NeoPixels.
 It contains a controller and three LEDs.
 
 ![Inside NeoPixel](imgs/neozoom.jpg)
+
+Note that the LEDs are "glued" on the 4 "copper" leads.
+The controller is powered (two bond wires coming from two leads), and it drives the three LEDs 
+(three bond wires going from controller to the LEDs, and the LEDS then wired to GND).
+Finally the controller is bond wired to the data-in and data-out leads.
+Note that my annotation is guessed, VCC and GND could be swapped, so could data-in and data-out.
+
 
 I did have a 4×4 NeoPixel board, and I investigated the power usage on that board.
 I measured the current when 1 NeoPixel is red (0xFF0000). I measured also for 2, 3, ... 16 NeoPixels.
@@ -966,7 +978,53 @@ It does help a bit.
 
 Hmm, guess I have to print in the old color.
 
-## todo
+
+
+## 16. Delay
+
+As a follow-up to the NeoPixel timing experiments in [8. Timing](#8-Timing) I did a final experiment.
+The goal is to delay caused by the daisy chain.
+
+I took the final NeoPixel board with 64 NeoPixels.
+I put a probe of a logic analyzer on the data-in pin of the board, which is the data-in of NeoPixel 0.
+I put a second probe on the data-out pin of the board, which is the data-out of NeoPixel 63 - or data-in of the non-existing NeoPixel 64.
+
+```C
+  #define NUMPIXELS      65
+  for( int i=0; i<NUMPIXELS; i++ ) pixels.setPixelColor(i, i*0x010203 );
+  pixels.show();
+}
+```
+
+I wrote the above small test loop. 
+It configures _65_ pixels. Since this is one more pixel than is present 
+on the board, the data-out pin of the board will show the data send to this non-existing NeoPixel 64.
+Note that the loop sets the red value of NeoPixel _i_ to the value _i_, the green value to _2×i_,
+and the blue value to _3×i_. In other words, NeoPixel 64 will be configured to R=64, G=128, B=192.
+
+![NeoPixel delay](imgs/neodelay.png)
+
+ - The top of the picture shows a trace of the two signals:
+   the signal on _board data-in_ (NewPixel 0 data-in) and the signal on _board data-out_ (NeoPixel 63 data-out, NeoPixel 64 data-in).
+ - Sending the RGB data to the board takes, as before ~2ms (the wide gray rectangle in the top trace). 
+ - All the 3×8×64 pulses pass NeoPixel 0, but NeoPixel 64 only sees the remaining 3×8×1 pulses for itself.
+   (the small gray rectangle in the top trace). 
+ - The bottom of the picture shows the same trace, but zoomed in (as indicated in yellow) on the end of the trace.
+ - NeoPixel 64 will be configured to G=128=0b1000000, R=64=0b0100000, B=192=0b11000000; 
+   we see those pulses pass as the last ones on data-in of NeoPixel 0.
+ - This does mean that the daisy-chained NeoPixels are not one big shift register: the data of NeoPixel 64 is not shifted-in as first, but as last.
+ - This is confirmed by the [WS2812B datasheet](https://cdn-shop.adafruit.com/datasheets/WS2812B.pdf):
+   _the first pixel collect initial 24bit data then sent to the internal data latch, the other data [...] sent to the next cascade pixel_
+ - The pulse are passed on by NeoPixel 0 to NeoPixel 1, which passes it on to 2, etc, until they arrive on the data-in of NeoPixel 64.
+ - We see that the chain of 64 NeoPixels causes a delay of 9.13µs (cyan rectangle).
+ - I suspect that a NeoPixel is "activated" - starts illuminating using its new settings - once the data 
+   is in "the internal data latch" as the datasheet mentions.
+   This would means that the activation of the first and last NeoPixels is ~2000µs apart.
+ - It _could_ also be that a NeoPixel is only activated (from latch to the RGB led drivers) when the RET code is detected (a silent perod of 50 µs). 
+   This would mean that the activation of the first and last NeoPixels is only 9.13µs apart.
+ - I do not yet know how to measure the activation moment.
+
+## Todo
 
 - add cfg option for pulsating seconds
 - add animation **slide** (letters out of view)
