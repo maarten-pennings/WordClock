@@ -1034,12 +1034,12 @@ gradual during the configuration, or abrupt when the RET signal comes in.
 
 ![NeoPixel activation](imgs/neoactivate.png)
 
-The above capture shows a rather constant voltage of 4V before sending the pulses.
-When all pulses are send, at 2ms after T=0 (green arrow in left image), the voltage drops to 3V.
+The above capture shows a rather constant voltage of 4V4 before sending the pulses.
+When all pulses are send, at 2ms after T=0 (green arrow in left image), the voltage drops to 3V3.
 This seems to support the hypothesis that NeoPixels are activated when the RET code is received.
 
 Especially, because if we zoom in on the green arrow (right image), we see a plateau 
-at the original 4V that has a width of about T_RET (50us). This seems to indicate that
+at the original 4V4 that has a width of about T_RET (50us). This seems to indicate that
 T_RET us after the end of configuration, the LEDs are switched full on and the voltage starts to drop.
 
 
