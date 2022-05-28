@@ -317,6 +317,8 @@ See the [source](sketches/TimeKeeping) for more
 on this string. The easiest way to play with this yourself is to change the string so that the timezone change (to or from DST)
 is a couple of minutes from now. For this it is good to know that you can enter `M3.5.0/17:34`.
 
+Also, the ESP8266 comes with standard time zones, see `C:\Users\maarten\AppData\Local\Arduino15\packages\esp8266\hardware\esp8266\3.0.2\cores\esp8266\TZ.h`.
+
 Here is the output of the script
 ```
 time-keeping - NTP with TZ and DST
